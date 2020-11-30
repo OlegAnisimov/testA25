@@ -1,0 +1,48 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+$albums = $this->macros('photoalbum', 'album', array($page->getId()))
+?>
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div id="photoalbum" umi:method="album" umi:module="photoalbum" umi:element-id="<?=$page->getId()?>">
+    <div class="descr" umi:element-id="<?=$page->getId()?>" umi:field-name="descr">
+        <?=$page->getValue('descr')?>
+    </div>
+
+    <?php foreach ($albums['void:lines'] as $album): ?>
+        <?php $albumPage = $this->getPageById($album['attribute:id']) ?>
+        <div class="gray_block" umi:element-id="<?=$album['attribute:id']?>">
+            <a href="<?=$album['attribute:link']?>">
+                <?=$this->render(
+                    array(
+                        'id' => $albumPage->getId(),
+                        'fieldName' => 'photo',
+                        'src' => $albumPage->getValue('photo'),
+                        'empty' => $this->translate('empty-photo'),
+                        'width' => 154,
+                        'height' => 110
+                    ),
+                    'library/thumbnails'
+                )?>
+            </a>
+            <div class="descr">
+                <h3>
+                    <a href="<?=$album['attribute:link']?>" umi:delete="delete" umi:element-id="<?=$album['attribute:id']?>" umi:field-name="h1">
+                        <?=$albumPage->getValue('h1')?>
+                    </a>
+                </h3>
+                <div umi:element-id="<?=$album['attribute:id']?>" umi:field-name="descr">
+                    <?=$albumPage->getValue('descr')?>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    <?php endforeach; ?>
+    <div class="clear" />
+</div>
+<?=$this->render(array('total' => $albums['total'], 'per_page' => $albums['per_page']), 'library/numpages')?>

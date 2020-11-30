@@ -1,0 +1,40 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<div class="infoblock">
+    <div class="title">
+        <h2 umi:element-id="<?=$variables['category_id']?>" umi:field-name="name">
+            <?=$this->getPageById($variables['category_id'])->getName() ?>
+        </h2>
+    </div>
+    <div class="body">
+        <div class="in">
+            <div umi:element-id="<?=$variables['category_id']?>" umi:region="list" umi:sortable="none"
+                 umi:module="news" umi:method="lastlist" umi:button-position="top right">
+
+                <?php foreach ($variables['items']['nodes:item'] as $item): ?>
+                    <?php $news = $this->getPageById($item['attribute:id']); ?>
+
+                    <div class="news_item" umi:element-id="<?=$item['attribute:id']?>" umi:region="row">
+                        <span class="date" umi:field-name="publish_time" umi:empty="<?=$this->translate('empty-page-date')?>">
+                            <?php if (isset($item['attribute:publish_time'])): ?>
+                                <?=date('d.m.Y', $item['attribute:publish_time'])?>
+                            <?php endif; ?>
+                        </span>
+
+                        <a href="<?=$item['attribute:link']?>" class="title" umi:field-name="name" umi:delete="delete" umi:empty="<?=$this->translate('empty-page-name')?>">
+                            <?=$news->getName()?>
+                        </a>
+
+                        <div class="descr" umi:field-name="anons" umi:empty="<?=$this->translate('empty-page-anons')?>">
+                            <?=$news->getValue('anons')?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <a href="<?=$variables['archive_link']?>" class="archive">
+                <?=$this->translate('news-archive')?>
+            </a>
+        </div>
+    </div>
+</div>

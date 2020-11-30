@@ -1,0 +1,5 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php $field = $variables['field'] ?>
+<input type="text" name="<?=$field['attribute:input_name']?>" value="<?=isset($field['node:value']) ? $field['node:value'] : ''?>" class="textinputs" />

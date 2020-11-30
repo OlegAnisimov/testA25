@@ -1,0 +1,57 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if(isset($variables['subscriber_dispatches'])): ?>
+    <?php if ($variables['subscriber_dispatches']['nodes:items']): ?>
+        <div class="infoblock">
+            <div class="title"><h2><?=$this->translate('newsletters')?></h2></div>
+            <div class="body">
+                <div class="in">
+                    <form action="<?=cmsController::getInstance()->getPreLang()?>/dispatches/subscribe_do/" name="sbs_frm" method="post">
+                        <?php $newsletter = array();
+                        if(cmsController::getInstance()->getPreLang() == '/en') {
+                            $newsletter = $variables['subscriber_dispatches']['nodes:items'][1];
+                        } else {
+                            $newsletter = $variables['subscriber_dispatches']['nodes:items'][0];
+                        }
+                        ?>
+
+                        <ul>
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="subscriber_dispatches[<?=$newsletter['attribute:id']?>]" value="<?=$newsletter['attribute:id']?>"
+                                        <?php if($newsletter['attribute:is_checked'] == 1): ?>
+                                            checked="checked"
+                                        <?php endif; ?>
+                                        />
+                                    <?=$newsletter['node:disp_name']; ?>
+                                </label>
+                            </li>
+                        </ul>
+                        <input type="submit" class="button" value="<?=$this->translate('subscribe')?>" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+    <div class="infoblock">
+        <div class="title"><h2><?=$this->translate('newsletters')?></h2></div>
+        <div class="body">
+            <div class="in">
+                <form action="<?=cmsController::getInstance()->getPreLang()?>/dispatches/subscribe_do/" name="sbs_frm" method="post">
+                    <ul>
+                        <li><input	type="text"
+                                      onblur="if(this.value == '') this.value = '<?=$this->translate('e-mail')?>';"
+                                      onfocus="if(this.value == '<?=$this->translate('e-mail')?>') this.value = '';"
+                                      value="<?=$this->translate('e-mail')?>"
+                                      class="input"
+                                      id="subscribe"
+                                      name="sbs_mail" /></li>
+                    </ul>
+                    <input type="submit" class="button" value="<?=$this->translate('subscribe')?>" />
+                </form>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

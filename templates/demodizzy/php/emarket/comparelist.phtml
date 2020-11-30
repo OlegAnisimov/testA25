@@ -1,0 +1,36 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+$langPrefix = cmsController::getInstance()->getPreLang();
+?>
+
+<?php if (isset($variables['items']['nodes:item'])): ?>
+    <div class="infoblock">
+        <div class="title">
+            <h2>
+                <?=$this->translate('compare-title')?>
+            </h2>
+        </div>
+        <div class="body">
+            <div class="in">
+                <ul class="compare">
+                    <?php foreach ($variables['items']['nodes:item'] as $item): ?>
+                        <li>
+                            <a href="<?=$langPrefix?>/emarket/removeFromCompare/<?=$item['attribute:id']?>/" class="first" title="<?=$this->translate('delete')?>">&#215;</a>
+                            <a href="<?=$langPrefix?><?=$item['attribute:link']?>" class="title" title="<?=$item['node:value']?>" umi:element-id="<?=$item['attribute:id']?>" umi:field-name="name">
+                                <?=$item['node:value']?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+
+                <?php if (umiCount($variables['items']['nodes:item']) > 1 ): ?>
+                    <a href="<?=$langPrefix?>/emarket/compare/" class="button">
+                        <?=$this->translate('compare-submit')?>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

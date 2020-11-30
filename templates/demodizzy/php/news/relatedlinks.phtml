@@ -1,0 +1,17 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if (is_array($variables) && isset($variables["void:lines"])):?>
+    <h4><?=$this->translate('news-realted')?></h4>
+
+    <ul>
+        <?php foreach ($variables["void:lines"] as $item): ?>
+            <li umi:element-id="<?=$item['attribute:id']?>">
+                <a href="<?=$item['attribute:link']?>" umi:field-name="news">
+                    <?=$item['node:name']?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+
+    </ul>
+<?php endif; ?>

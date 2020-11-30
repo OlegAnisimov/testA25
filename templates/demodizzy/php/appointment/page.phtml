@@ -1,0 +1,296 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php $page = $variables['full:page']; ?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<?php
+$recordingTimeBlock =	<<<HTML
+							<div class="recording-time" style="display: none;">
+<div class="recording-time__title">Доступное время записи:<div class="recording-time__note">Свободно</div></div>
+<div class="recording-time-selection__wrapper">
+
+</div>
+<div class="free-days">В другие дни - свободно*</div>
+<div class="recording-time__title">Мастера, выполняющие услугу:</div>
+<ul class="masters-list">
+</ul>
+<span class="online-entry__btn mobile_next_step mobile_visible">Далее</span>
+</div>
+
+HTML;
+$finalRegistrationText= <<<HTML
+
+<div class="online-entry__ordering">
+	<div class="final-registration__title">Пожалуйста, проверьте вашу заявку</div>
+	<ul></ul>
+	<div class="final-registration__hint">Если нашли ошибку - нажмите "Изменить" выше.</div>
+	<div class="final-registration__hint final-registration__error"></div>
+</div>
+HTML;
+$hintText = '';
+if (strlen($page->getValue('appoint_hint_step_text'))) {
+$hintText = $page->getValue('appoint_hint_step_text');
+} else {
+$hintText =  'Выберите одну базовую/главную услугу. Дополнительные услуги уточнит оператор. Указаны базовые цены. Прайс не является публичной офертой.';
+};
+$dontCareBtnText = '';
+if (strlen($page->getValue('appoint_dont_care_button'))) {
+$dontCareBtnText =  $page->getValue('appoint_dont_care_button');
+} else {
+$dontCareBtnText = 'Мне все равно';
+};
+$dontCareHintText = '';
+if (strlen($page->getValue('appoint_dont_care_hint'))) {
+$dontCareHintText = $page->getValue('appoint_dont_care_hint');
+} else {
+$dontCareHintText = 'Если вы не хотите выбирать (оператор подскажет)';
+};
+
+
+
+?>
+
+
+
+<script src='/templates/demodizzy/js/appointment/lib/moment.js' type="text/javascript"></script>
+<script src='/templates/demodizzy/js/appointment/lib/jQuery.hoverForMore.js' type="text/javascript"></script>
+<script src='/templates/demodizzy/js/appointment/lib/jQuery.inputmask.js' type="text/javascript"></script>
+<script src='/templates/demodizzy/js/appointment/lib/ru.js' type="text/javascript"></script>
+<script src='/templates/demodizzy/js/appointment/lib/underscore.js' type="text/javascript"></script>
+<script src='/templates/demodizzy/js/appointment/lib.js' type="text/javascript"></script>
+
+<div class="appointments main-container">
+	<script src='/templates/demodizzy/js/appointment/main.js' type="text/javascript"></script>
+	<div id="wrapper">
+
+		<!-- Начало блока Онлайн запись -->
+		<div class="online-entry__wrapper">
+
+			<!-- Начало первого шага -->
+			<div class="online-entry__step selected" id="data-service">
+				<div class="online-entry__title">
+							<span umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_service_choice_title" umi:field-type="text" umi:empty="<?=$this->translate('appoint_service_choice_title')?>">
+								<?php
+								if (strlen($page->getValue('appoint_service_choice_title'))) {
+									echo $page->getValue('appoint_service_choice_title');
+								} else {
+									echo 'Выберите услугу:';
+								}
+								?>
+							</span>
+					&nbsp;<span class="online-entry__choise"></span>
+				</div>
+				<div class="online-entry__content">
+					<div class="column-60pct mobile_full_width">
+						<div class="mobile_visible">
+							<?= $recordingTimeBlock ?>
+							<div class="hint_step_mobile" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_hint_step_text" umi:field-type="wysiwyg" umi:empty="<?=$this->translate('empty-appoint-hint-step')?>">
+								<?= $hintText ?>
+							</div>
+						</div>
+						<div class="service-choose mobile_no_bord">
+							<img id="service-loader" src="/templates/demodizzy/images/appointments/loader.gif" />
+						</div>
+					</div>
+					<div class="column-40pct hidden_mobile">
+						<?= $recordingTimeBlock ?>
+						<div class="hint-step" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_hint_step_text" umi:field-type="wysiwyg" umi:empty="<?=$this->translate('empty-appoint-hint-step')?>">
+							<?= $hintText ?>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Конец первого шага -->
+
+			<!-- Начало второго шага -->
+			<div class="online-entry__step" id="data-personal">
+				<div class="online-entry__title">
+					<span class="online-entry__nonactive" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_personal_step_title" umi:field-type="text" umi:empty="<?=$this->translate('appoint_personal_step_title')?>">
+						<?php
+						if (strlen($page->getValue('appoint_personal_step_title'))) {
+							echo $page->getValue('appoint_personal_step_title');
+						} else {
+							echo 'Специалист (пожалуйста, укажите)';
+						}
+						?>
+					</span>
+					<span class="online-entry__current" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_personal_choice_title" umi:field-type="text" umi:empty="<?=$this->translate('appoint_personal_choice_title')?>">
+							<?php
+							if (strlen($page->getValue('appoint_personal_choice_title'))) {
+								echo $page->getValue('appoint_personal_choice_title');
+							} else {
+								echo 'Выберите специалиста:';
+							}
+							?>
+					</span>
+					&nbsp;<span class="online-entry__choise"></span>
+				</div>
+				<div class="online-entry__content">
+					<div class="selection-specialist">
+						<div class="selection-specialis_hint hidden_mobile">
+							<span class="online-entry__btn .operator-click-btn" id="operator-click" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_dont_care_button" umi:field-type="string" umi:empty="<?=$this->translate('empty-appoint-dont-care-button')?>">
+								<?= $dontCareBtnText ?>
+							</span>
+							<span class="operator-prompt" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_dont_care_hint" umi:field-type="string" umi:empty="<?=$this->translate('empty-appoint-dont-care-hint')?>">
+								<?= $dontCareHintText ?>
+							</span>
+						</div>
+						<div class="master-list">
+						</div>
+						<div class="selection-specialis_hint mobile_visible clearfix">
+							<span class="operator-prompt" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_dont_care_hint" umi:field-type="string" umi:empty="<?=$this->translate('empty-appoint-dont-care-hint')?>">
+								<?= $dontCareHintText ?>
+							</span>
+							<span class="online-entry__btn operator-click-btn" id="operator-click" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_dont_care_button" umi:field-type="string" umi:empty="<?=$this->translate('empty-appoint-dont-care-button')?>">
+								<?= $dontCareBtnText ?>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Конец второго шага -->
+
+			<!-- Начало третьего шага -->
+			<div class="online-entry__step" id="data-entry">
+				<div class="online-entry__title">
+					<span class="online-entry__nonactive" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_date_step_title" umi:field-type="text" umi:empty="<?=$this->translate('appoint_date_step_title')?>">
+						<?php
+						if (strlen($page->getValue('appoint_date_step_title'))) {
+							echo $page->getValue('appoint_date_step_title');
+						} else {
+							echo 'Дата визита (пожалуйста, укажите)';
+						}
+						?>
+					</span>
+					<span class="online-entry__current" umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_date_choice_title" umi:field-type="text" umi:empty="<?=$this->translate('appoint_date_choice_title')?>">
+						<?php
+						if (strlen($page->getValue('appoint_date_choice_title'))) {
+							echo $page->getValue('appoint_date_choice_title');
+						} else {
+							echo 'Дата визита:';
+						}
+						?>
+					</span>
+					&nbsp;<span class="online-entry__choise"></span>
+				</div>
+				<div class="online-entry__content">
+					<div class="column-70pct mobile_full_width mobile_calendar" style="padding: 0;">
+						<div class="date-visit__wrapper">
+							<div id="datepicker"></div>
+						</div>
+					</div>
+					<div class="column-30pct mobile_full_width mobile_choose_time">
+						<div class="choose-time" style="display: none;">
+							<div class="choose-time__title">Выберите время визита</div>
+							<div class="choose-time_selection">
+
+							</div>
+							<div class="description-step__status">
+								<div class="status-busy">Занятно</div>
+								<div class="status-free">Свободно</div>
+								<div class="status-output">Выходной</div>
+							</div>
+						</div>
+						<div class="description-step clearfix">
+							<div class="description-step__status">
+								<div class="status-busy">Занятно</div>
+								<div class="status-free">Свободно</div>
+								<div class="status-output">Выходной</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Конец третьего шага -->
+
+			<!-- Начало четвертого шага -->
+			<div class="online-entry__step" id="data-confirm">
+				<div class="online-entry__title">
+					<span umi:element-id="<?=$page->getId()?>" umi:field-name="appoint_confirm_step_title" umi:field-type="text" umi:empty="<?=$this->translate('appoint_confirm_step_title')?>">
+						<?php
+						if (strlen($page->getValue('appoint_confirm_step_title'))) {
+							echo $page->getValue('appoint_confirm_step_title');
+						} else {
+							echo 'Подтверждение заявки на визит';
+						}
+						?>
+					</span>
+				</div>
+				<div class="online-entry__content">
+					<div class="final-registration clearfix">
+						<div class="mobile_visible">
+							<?= $finalRegistrationText ?>
+						</div>
+						<div class="column-50pct mobile_full_width">
+							<div class="online-entry__ordering">
+								<form action="/appointment/postAppointment/" method="POST">
+									<input type="text" name="name" placeholder="Ваше имя" data-valid="text" />
+									<input type="text" name="phone" placeholder="Телефон" data-valid="phone" />
+									<input type="text" name="email" placeholder="E-mail" data-valid="email" data-inputmask="'alias': 'email'" />
+
+									<textarea name="commentary" placeholder="Комментарий"></textarea>
+									<?php
+									$submitValue = $page->getValue('appoint_book_time_button');
+
+									if (permissionsCollection::getInstance()->isSv()) {
+										$pageId = $page->getId();
+										$emptyButtonText = $this->translate('empty-appoint-book-time-button');
+										$editButtonTest = <<<HTML
+<div class="hidden">Текст кнопки:
+	<span
+		umi:element-id="$pageId"
+		umi:field-name="appoint_book_time_button"
+		umi:field-type="string"
+		umi:empty="$emptyButtonText">
+			$submitValue
+	</span>
+</div>
+HTML;
+
+									}
+
+									if (!strlen($submitValue)) {
+										$submitValue = $this->translate('empty-appoint-book-time-button');
+									}
+									?>
+									<input type="submit" id="create-appointment" value="<?=$submitValue?>">
+								</form>
+							</div>
+						</div>
+						<div class="column-50pct hidden_mobile">
+							<?= $finalRegistrationText ?>
+						</div>
+					</div>
+					<div class="communication-admin">
+						<div class="communication-admin__content">
+									<span
+										umi:element-id="<?=$page->getId()?>"
+										umi:field-name="appoint_book_time_hint"
+										umi:field-type="string"
+										umi:empty="<?=$this->translate('empty-appoint-book-time-hint')?>">
+										<?php
+										if (strlen($page->getValue('appoint_book_time_hint'))) {
+											echo $page->getValue('appoint_book_time_hint');
+										} else {
+											echo 'После заполнения формы администратор свяжется с вами по телефону.';
+										}
+										?>
+									</span>
+							<br/>
+
+							<a href="/contacts">Контакты администратора</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Конец четвертого шага -->
+		</div>
+
+		<!-- Конец блока Онлайн запись -->
+	</div>
+	<script src='/templates/demodizzy/js/appointment/datepicker.js' type="text/javascript"></script>
+</div>

@@ -1,0 +1,162 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php
+	if (!function_exists('getChecked')) {
+		function getChecked($data) {
+			$result = array('', '', '');
+			$i = 0;
+			$checked = false;
+			$items = (isset($data['nodes:item'])) ? $data['nodes:item'] : array();
+			foreach ($items as $item) {
+				if (isset($item['attribute:is-selected']) && $item['attribute:is-selected']) {
+					$result[$i] = 'checked';
+					$checked = true;
+				}
+				$i++;
+			}
+
+			if (!$checked) {
+				$result['2'] = 'checked';
+			}
+			return $result;
+		}
+	}
+
+	if (!function_exists('getFieldAttribute')) {
+		function getFieldAttribute($data, $attribute) {
+			return (isset($data["attribute:$attribute"])) ? $data["attribute:${attribute}"] : 'undefined';
+		}
+	}
+
+	$data = '';
+	$dataType = getFieldAttribute($variables, 'data-type');
+	$fieldTitle = getFieldAttribute($variables, 'title');
+
+	switch ($dataType) {
+		case 'string':
+		case 'color':
+		case 'password':
+		case 'optioned':
+		case 'tags':
+		case 'symlink':
+		case 'text':
+		case 'wysiwyg':
+		case 'relation': {
+			$i = 0;
+			$items = (isset($variables['nodes:item'])) ? $variables['nodes:item'] : array();
+			foreach ($items as $item) {
+				$itemValue = (isset($item['node:value'])) ? $item['node:value'] : 'undefined';
+				$fieldName = getFieldAttribute($variables, 'name');
+				$itemTemplate = <<<DATA
+					<label>
+						<input type="checkbox" name="filter[${fieldName}][${i}]" value="${itemValue}" />
+						${itemValue}
+					</label>
+DATA;
+				$data .= $itemTemplate;
+				$i++;
+			}
+			break;
+		}
+		case 'boolean':
+		case 'file':
+		case 'img_file':
+		case 'swf_file':
+		case 'video_file': {
+			$selected = getChecked($variables);
+			$fieldName = getFieldAttribute($variables, 'name');
+			$data = <<<DATA
+			<label>
+				<input type="radio" name="filter[${fieldName}]" value="1" ${selected[1]}/>
+				Есть
+			</label>
+			<label>
+				<input type="radio" name="filter[${fieldName}]" value="0" ${selected[0]}/>
+				Нет
+			</label>
+			<label>
+				<input type="radio" name="filter[${fieldName}]" value="" ${selected[2]}/>
+				Неважно
+			</label>
+DATA;
+		break;
+		}
+		case 'date':
+		case 'int':
+		case 'price':
+		case 'float':
+		case 'counter': {
+		$min = $max = $selectedMin = $selectedMax = 0;
+			switch (true) {
+				case (isset($variables['minimum']) && isset($variables['maximum'])): {
+					$minData = $variables['minimum'];
+					$maxData = $variables['maximum'];
+
+					$min = isset($minData['node:value']) ? $minData['node:value'] : 0;
+					$max = isset($maxData['node:value']) ? $maxData['node:value'] : 0;
+					$selectedMin = isset($minData['attribute:selected']) ? $minData['attribute:selected'] : $min;
+					$selectedMax = isset($maxData['attribute:selected']) ? $maxData['attribute:selected'] : $max;
+					break;
+				}
+				case (isset($variables['item'])): {
+					$item = $variables['item'];
+					$oneValue = (isset($item['node:value'])) ? $item['node:value'] : 0;
+					$min = $max = $selectedMin = $selectedMax = $oneValue;
+					break;
+				}
+			}
+			if ($dataType == 'date') {
+				$selectedMinDate = new umiDate($selectedMin);
+				$selectedMin = $selectedMinDate->getFormattedDate('m.d.y');
+
+				$minDate = new umiDate($min);
+				$min = $minDate->getFormattedDate('m.d.y');
+
+				$selectedMaxDate = new umiDate($selectedMax);
+				$selectedMax = $selectedMaxDate->getFormattedDate('m.d.y');
+
+				$maxDate = new umiDate($max);
+				$max = $maxDate->getFormattedDate('m.d.y');
+			}
+
+			$fieldName = getFieldAttribute($variables, 'name');
+
+			if ($dataType == 'date') {
+				$data = <<<DATA
+			<div class="date_range">
+				<input type="text" name="filter[${fieldName}][from]" value="${selectedMin}" data-minimum="${min}" data-maximum="${max}" />
+				<span>-</span>
+				<input type="text" name="filter[${fieldName}][to]" value="${selectedMax}" data-minimum="${min}" data-maximum="${max}" />
+			</div>
+DATA;
+			} else {
+				$data = <<<DATA
+			<div class="range">
+				<input type="text" name="filter[${fieldName}][from]" value="${selectedMin}" data-minimum="${min}" />
+				<span>-</span>
+				<input type="text" name="filter[${fieldName}][to]" value="${selectedMax}" data-maximum="${max}" />
+			</div>
+			<div class="slider_group">
+				<span class="min"></span>
+				<div class="slider"></div>
+				<span class="max"></span>
+			</div>
+DATA;
+			}
+		}
+	}
+
+	$field = <<<FIELD
+	<div class="field">
+		<h3>${fieldTitle}</h3>
+		<div class="data">
+			${data}
+		</div>
+	</div>
+FIELD;
+
+	echo $field;
+?>

@@ -1,0 +1,10 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+$activationResult = $this->macros('users', 'activate');
+$status = (isset($activationResult['attribute:status'])) ? $activationResult['attribute:status'] : 'fail';
+$messageLabel = ($status == 'success') ? 'account-activated' : 'account-not-activated';
+?>
+
+<h1><?= $variables['@header'] ?></h1>
+<p><?= $this->translate($messageLabel) ?></p>

@@ -1,0 +1,8 @@
+#main #page div.left {
+	display: none
+}
+#main #page div.center {
+	margin: 0 250px 0 15px;
+	*width: 723px;
+	_width: 717px;
+}

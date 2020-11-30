@@ -1,0 +1,158 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<?php
+$this->setCommonVar('user', $variables['user']);
+
+function isTwoColumns($variables) {
+	$page = (isset($variables['full:page'])) ? $variables['full:page'] : null;
+	return (
+		(
+			$variables['@module'] == 'emarket' &&
+			!in_array($variables['@method'], array('compare', 'personal', 'ordersList'))
+		)
+		||
+		(
+			$page instanceof umiHierarchyElement &&
+			$page->getObject()->getTypeGUID() == 'appointment-page'
+		)
+	);
+}
+
+$canonicalLink = '';
+
+if (isset($variables['@pageId'])) {
+	$result = $this->macros('seo', 'getRelCanonical', ['default', $variables['@pageId']]);
+	$canonicalLink = $result['@link'];
+
+	if (strlen($canonicalLink)) {
+		$canonicalLink = '<link rel="canonical" href="' . $canonicalLink . '" />';
+	}
+}
+?>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="<?= $variables['meta']['keywords'] ?>" />
+	<meta name="description" content="<?= $variables['meta']['description'] ?>" />
+	<title><?= $variables['@title'] ?></title>
+
+	<link rel="stylesheet" href="/templates/demodizzy/css/jquery-ui.css" />
+	<script type="text/javascript" src="/ulang/ru/common/emarket/?js" charset="utf-8"></script>
+
+	<?= $this->macros('system', 'includeQuickEditJs') ?>
+	<script type="text/javascript" src="/templates/demodizzy/js/i18n.<?= $variables['@lang'] ?>.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/templates/demodizzy/js/__common.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/templates/demodizzy/js/owl.carousel.min.js"></script>
+	<?= $canonicalLink ?>
+	<link type="text/css" rel="stylesheet" href="/templates/demodizzy/css/common.css" />
+	<link type="text/css" rel="stylesheet" href="/templates/demodizzy/css/owl.carousel.css" />
+	<link type="text/css" rel="stylesheet" href="/templates/demodizzy/css/owl.theme.css" />
+
+	<?php if ($variables['@method'] == 'compare'):?>
+		<link type="text/css" rel="stylesheet" href="/templates/demodizzy/css/two_left.css" />
+	<?php endif; ?>
+	<script type="text/javascript" src="http://apis.google.com/js/plusone.js">
+		{lang: 'ru'}
+	</script>
+	<!-- social buttons-->
+	<script type="text/javascript" src="https://vk.com/js/api/openapi.js"></script>
+	<script src="http://vkontakte.ru/js/api/openapi.js" type="text/javascript" charset="windows-1251"></script>
+	<!-- /social buttons-->
+	<link media="print" type="text/css" rel="stylesheet" href="/templates/demodizzy/css/print.css" />
+</head>
+<?php
+$themePath = '';
+$siteInfo = $this->getPageByPath('/contacts/');
+if ($siteInfo instanceof umiHierarchyElement) {
+	$theme = $this->getObjectById($siteInfo->getValue('site_theme'));
+	if ($theme instanceof umiObject) {
+		/** @var umiImageFile $image */
+		$image = $theme->getValue('background');
+		if ($image instanceof umiImageFile) {
+			$themePath = $image->getFilePath(true);
+		}
+	}
+}
+?>
+<body style="background: url(<?=$themePath?>) 50% 0% repeat-x #fff">
+<div id="main">
+	<div id="head">
+		<a id="logo" href="<?= $variables['@pre-lang'] ?>/" umi:element-id="<?= $this->getPageByPath('contacts')->getId() ?>" umi:field-name="site_logo"
+		   style="background-image: url(<?= $this->getPageByPath('contacts')->getValue('site_logo') ?>)" />
+		</a>
+		<div class="site_info" itemscope="itemscope" itemtype="http://schema.org/Organization">
+			<?=$this->render($this->macros('menu', 'draw', array('hmenu')), 'menu/hmenu')?>
+			<div class="work" umi:element-id="<?= $this->getPageByPath('contacts')->getId() ?>">
+				<div itemprop="telephone" class="phone" umi:field-name="phone">
+					<?= $this->getPageByPath('contacts')->getValue('phone') ?>
+				</div>
+				<div umi:field-name="order_info_top">
+					<?= $this->getPageByPath('contacts')->getValue('order_info_top') ?>
+				</div>
+			</div>
+		</div>
+		<?=$this->render($this->macros('emarket', 'cart'), 'emarket/basket')?>
+		<div class="callback_form">
+			<h2><a href="#callback_form">Заказать звонок</a></h2>
+		</div>
+	</div>
+	<?=$this->render($this->macros('content', 'menu', array(null, 1)), 'content/menu/top') ?>
+	<div id="page">
+		<div class="right">
+			<?=$this->render($variables['user'], 'users/authorization')?>
+
+			<?php if (isTwoColumns($variables)): ?>
+				<div class="cards" umi:element-id="<?= $this->getPageByPath('contacts')->getId() ?>" umi:field-name="order_info_left">
+					<?= $this->getPageByPath('contacts')->getValue('order_info_left') ?>
+				</div>
+			<?php else: ?>
+				<?=$this->render($this->getPageByPath('news1/speshite_akciya'), 'news/rightcolumncounter'); ?>
+				<?=$this->render($this->macros('news', 'lastlist', array('news1', null, null, true)), 'news/rightcolumnlist'); ?>
+				<?=$this->render($this->macros('emarket', 'getCompareList'), 'emarket/comparelist') ?>
+				<?=$this->render($this->macros('vote', 'insertlast'), 'vote/insertlast')?>
+				<?=$this->render($this->macros('dispatches', 'subscribe', array(null, $variables['user']['@id'])), 'dispatches/subscribeRight') ?>
+				<?=$this->render($this->macros('content', 'getRecentPages', array(null,null,null,null,'3')), 'content/getRecentPagesSidebar') ?>
+				<?=$this->render($this->macros('banners', 'fastInsert', array('right_block')), 'banners/fastinsert') ?>
+			<?php endif; ?>
+		</div>
+		<?php if (!isTwoColumns($variables)): ?>
+			<div class="left">
+				<?=$this->render(null, 'search/form')?>
+
+				<?=$this->render($this->macros('catalog', 'getCategoryList', array('void', 'shop', '', 1)), 'catalog/maincategorylist')?>
+
+				<div class="cards" umi:element-id="<?=$siteInfo->getId()?>" umi:field-name="order_info_left">
+					<?=$siteInfo->getValue('order_info_left')?>
+				</div>
+				<div class="hours" umi:element-id="<?=$siteInfo->getId()?>" umi:field-name="payment_info_left">
+					<?=$siteInfo->getValue('payment_info_left')?>
+				</div>
+				<div>
+					<iframe src="http://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FUMI.CMS&amp;width=188&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=false&amp;header=false&amp;height=293" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:188px; height:293px; margin: 50px 0 10px;" allowTransparency="true"></iframe>
+					<!-- VK Widget -->
+					<div id="vk_groups" style="margin-bottom: 10px;"></div>
+					<script type="text/javascript">
+						VK.Widgets.Group("vk_groups", {mode: 0, width: "188", height: "293"}, 23325076);
+					</script>
+				</div>
+			</div>
+		<?php endif; ?>
+		<div class="center" <?php if (isTwoColumns($variables)) { echo 'style="margin-left: 15px;"'; } ?>>
+			<?= $this->render($this->macros('system', 'listErrorMessages'), 'library/errors')?>
+			<div class="content">
+				<?= $this->render($this->macros('core', 'navibar' ), 'library/navibar_partial')?>
+				<?=$this->render($variables, $variables['@module'] . '/' . $variables['@method'])?>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div id="foot">
+		<div class="copyright">
+			<?=$this->render($this->usel('info-pages'), 'content/menu/foot'); ?>
+			Copyright <?=date('Y')?>. &#0169;
+		</div>
+	</div>
+</div>
+</body>
+</html>

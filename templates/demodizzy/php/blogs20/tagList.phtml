@@ -1,0 +1,12 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<?php
+    $langPrefix = cmsController::getInstance()->getPreLang();
+    $lastTag = array_pop($variables['nodes:item']);
+?>
+<?php foreach ($variables['nodes:item'] as $tag):?>
+<a href="<?=$langPrefix . $tag['link']?>"><?=$tag['tag']?></a>,
+<?php endforeach; ?>
+<a href="<?=$langPrefix . $lastTag['link']?>"><?=$lastTag['tag']?></a>

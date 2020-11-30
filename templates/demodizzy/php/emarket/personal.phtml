@@ -1,0 +1,46 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<script>
+    function tabChange(tab, prefix) {
+        var i, tabs = tab.parentNode;
+        for (i=0; tabs.childNodes.length > i; i++) {
+            var tab_in = tabs.childNodes[i];
+            if (tab_in.nodeName == "#text") continue;
+            tab_in.className = "";
+        }
+        tab.className = "act";
+        var con_tabs = jQuery('.' + prefix + tabs.className);
+        var con_tabs_arr = con_tabs[0].childNodes;
+        for (i=0; con_tabs_arr.length > i; i++) {
+            var con_tab = con_tabs_arr[i];
+            if (con_tab.nodeName == "#text") continue;
+            con_tab.style.display = "none";
+        }
+        var con_tab_act = document.getElementById(prefix + tab.id);
+        con_tab_act.style.display = "block";
+    }
+</script>
+<?php
+	$userType = $variables['user']['@type'];
+?>
+<div class="tabs">
+	<?php if ($userType !== 'guest'):?>
+		<div id="tab_profile" class="act" onclick="tabChange(this, 'con_');"><?=$this->translate('personal-info')?></div>
+	<?php endif; ?>
+    <div id="tab_orders" class="<?= ($userType === 'guest'? 'act' : '')?>" onclick="tabChange(this, 'con_');"><?=$this->translate('orders')?></div>
+</div>
+
+<div class="con_tabs">
+	<?php if ($variables['user']['@type'] !== 'guest'):?>
+		<?=$this->render(array_merge($variables, $this->macros('users', 'settings')), 'users/settings')?>
+   <?php endif; ?>
+		<?=$this->render(
+			array(
+				'form' => $this->macros('emarket','ordersList'), 
+				'user-type' => $variables['user']['@type']
+		   ), 
+			'emarket/ordersList')
+	   ?>
+	
+</div>

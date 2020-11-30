@@ -1,0 +1,32 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+$topics = $this->macros('forum', 'topic');
+?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<?php if ($topics['total'] > 0): ?>
+    <div id="forum">
+        <?php foreach ($topics['lines']['nodes:item'] as $topic):?>
+            <a name="<?=$topic['attribute:id']?>"></a>
+            <div class="forum_message">
+                <strong umi:element-id="<?=$topic['attribute:id']?>" umi:field-name="publish_time">
+                    <?php $date = $topic['attribute:publish_time']; echo $date->getFormattedDate('d.m.Y в H:i') ?>
+                </strong>
+                |
+                <?php if ($topic['attribute:author_id'] != '') {
+					echo $this->render($this->macros('users', 'viewAuthor', array($topic['attribute:author_id'])), 'users/viewAuthor');
+				} ?>
+                <div umi:element-id="<?=$topic['attribute:id']?>" umi:field-name="message">
+                    <?=$topic['node:message']?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<?=$this->render(array('message_post' => $this->macros('forum', 'message_post', array($page->getId()))), 'forum/message_post')?>

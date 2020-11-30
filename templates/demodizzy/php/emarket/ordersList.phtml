@@ -1,0 +1,86 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<div id="con_tab_orders" style="<?=($variables['user-type'] !== 'guest' ? 'display: none;' : '')?>">
+	<table class="blue">
+		<thead>
+		<tr>
+			<th class="name">
+				<?=$this->translate('order-number')?>
+			</th>
+			<th class="name">
+				<?=$this->translate('order-status')?>
+			</th>
+			<th class="name">
+				<?=$this->translate('order-method')?>
+			</th>
+			<th>
+				<?=$this->translate('order-sum')?>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($variables['form']['items']['nodes:item'] as $item): ?>
+			<?php $order = $this->getObjectById($item['attribute:id']) ?>
+			<?php $orderInfo = $this->macros('emarket', 'order', array($item['attribute:id'])) ?>
+			<tr>
+				<td class="name">
+					<strong>
+						<?=$this->translate('number')?> <?= isset($orderInfo['number']) ? $orderInfo['number'] : ''?>
+					</strong>
+					<div>
+						<?=$this->translate('date-from')?>
+						<?=($order->getValue('order_date') instanceof umiDate) ? $order->getValue('order_date')->getFormattedDate('d.m.Y') : ''?>
+					</div>
+				</td>
+				<td class="name">
+					<?=(isset($orderInfo['status']) && $orderInfo['status'] instanceof umiObject) ? $orderInfo['status']->getName() : ''?>
+					<div>
+						<?=$this->translate('date-from-1')?>
+						<?=($order->getValue('status_change_date') instanceof umiDate) ? $order->getValue('status_change_date')->getFormattedDate('d.m.Y') : ''?>
+					</div>
+				</td>
+				<td>
+					<?php if ($this->getObjectById($order->getValue('payment_id'))): ?>
+						<?=$this->getObjectById($order->getValue('payment_id'))->getName()?>
+					<?php endif; ?>
+				</td>
+				<td>
+					<?=$this->render($orderInfo['summary'], 'emarket/price')?>
+				</td>
+			</tr>
+			<?php $preLang =cmsController::getInstance()->getPreLang();
+			$hierarchy = umiHierarchy::getInstance(); ?>
+			<?php foreach ($orderInfo['items']['nodes:item'] as $orderItem): ?>
+				<tr>
+					<td colspan="3" class="name">
+						<a href="<?=$preLang . $hierarchy->getPathById($orderItem['void:element_id'])?>">
+							<?=$orderItem['attribute:name']?>
+						</a>
+					</td>
+					<td>
+						<?=$this->render(array('price' => $orderItem['price']), 'emarket/price')?>
+						x
+						<?=$orderItem['amount']?>
+						=
+						<?=$this->render(array('price' => $orderItem['total-price']), 'emarket/price')?>
+					</td>
+				</tr>
+			<?php endforeach; ?>
+			<?php $invoiceLink = $this->macros('emarket', 'getInvoiceLink', array($item['attribute:id'])) ?>
+			<?php if ($invoiceLink): ?>
+				<tr>
+					<td colspan="4">
+						<a href="<?=$invoiceLink?>" target="__blank">
+							<?=$this->translate('print-invoice')?>
+						</a>
+					</td>
+				</tr>
+			<?php endif; ?>
+			<tr>
+				<td colspan="4" class="separate"></td>
+			</tr>
+		<?php endforeach; ?>
+		</tbody>
+	</table>
+</div>

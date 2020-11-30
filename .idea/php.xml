@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/classes/vendor/phpunit/php-token-stream" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpunit/php-text-template" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpunit/php-code-coverage" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpunit/phpunit" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/classes/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/classes/vendor/emojione/emojione" />
+      <path value="$PROJECT_DIR$/classes/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpdocumentor/reflection-common" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpdocumentor/type-resolver" />
+      <path value="$PROJECT_DIR$/classes/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/classes/vendor/phar-io/version" />
+      <path value="$PROJECT_DIR$/classes/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/classes/vendor/composer" />
+      <path value="$PROJECT_DIR$/classes/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/classes/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/classes/vendor/phar-io/manifest" />
+      <path value="$PROJECT_DIR$/classes/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/classes/vendor/myclabs/deep-copy" />
+      <path value="$PROJECT_DIR$/classes/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpmailer/phpmailer" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/routing" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/polyfill-php70" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/polyfill-intl-normalizer" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/polyfill-php72" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/polyfill-intl-idn" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/classes/vendor/phpspec/prophecy" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/classes/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/global-state" />
+      <path value="$PROJECT_DIR$/classes/vendor/studio-42/elfinder" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/resource-operations" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/recursion-context" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/environment" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/comparator" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/exporter" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/object-enumerator" />
+      <path value="$PROJECT_DIR$/classes/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/code-unit-reverse-lookup" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/type" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/classes/vendor/sebastian/version" />
+    </include_path>
+  </component>
+  <component name="PhpUnit">
+    <phpunit_settings>
+      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/classes/vendor/autoload.php" />
+    </phpunit_settings>
+  </component>
+</project>

@@ -1,0 +1,20 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+
+<div class="personal_data">
+    <form enctype="multipart/form-data" method="post" action="<?=cmsController::getInstance()->getPreLang()?>/emarket/purchase/required/personal/do/">
+        <?=$this->render(array('form' => $this->macros('data', 'getEditForm', array($variables['purchase']['purchasing']['customer-id']))), 'data/formTemplate')?>
+        <div>
+            <input type="submit" class="button big" value="<?=$this->translate('continue')?>" />
+        </div>
+    </form>
+</div>
+<div class="personal_yandex">
+    <a href="http://market.yandex.ru/addresses.xml?callback=http%3A%2F%2F<?=$variables['context']['@domain']?>%2Femarket%2Fpurchase%2Fautofill%2Fyandex">
+        <img src="/templates/demodizzy/images/yandex.png" />
+    </a>
+</div>
+
+<div class="clear"></div>

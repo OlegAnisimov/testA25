@@ -1,0 +1,47 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<?php if ($variables['relatedGoods']): ?>
+    <?php $langPrefix = cmsController::getInstance()->getPreLang() ?>
+    <?php $hierarchy = umiHierarchy::getInstance(); ?>
+    <tr class="related-goods">
+        <td colspan="5">
+            <div class="title">
+                <?=$this->translate('emarket-related-goods')?><br />
+            </div>
+
+            <?php /** @var umiHierarchyElement $relatedGood */ ?>
+            <?php foreach ($variables['relatedGoods'] as $relatedGood): ?>
+                <?php
+                $isOptions = "false";
+				$type = umiObjectTypesCollection::getInstance()->getType($relatedGood->getObjectTypeId());
+
+				if ($type instanceof umiObjectType) {
+					$headerGroup = $type->getFieldsGroupByName('catalog_option_props');
+					if ($headerGroup instanceof umiFieldsGroup) {
+						$headerPageFields = $headerGroup->getFields();
+						foreach ($headerPageFields as $headerPageField) {
+							if ($relatedGood->getValue($headerPageField->getName())) {
+								$isOptions = "true";
+								break;
+							}
+						}
+					}
+				}
+                ?>
+                <div class="item">
+                    <a href="<?=$langPrefix?><?=$hierarchy->getPathById($relatedGood->getId())?>"><?=$relatedGood->getName()?></a>
+                </div>
+                <div class="buy">
+                    <span>
+                        <?=$this->render($this->macros('emarket', 'price', array($relatedGood->getId())), 'emarket/price')?>
+                        &#160;&#160;&#160;
+                        <a href="<?=$langPrefix?>/emarket/basket/put/element/<?=$relatedGood->getId()?>/" class="basket_list options_<?=$isOptions?>" id="add_basket_<?=$relatedGood->getId()?>"><?=$this->translate('basket-add-short')?></a>
+                    </span>
+                </div>
+            <?php endforeach; ?>
+
+        </td>
+    </tr>
+<?php endif; ?>

@@ -1,0 +1,157 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+/** @var umiHierarchyElement $page */
+$page = $variables['full:page'];
+$this->macros('content', 'addRecentPage', array($variables['@pageId']));
+?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div class="catalog" itemscope="itemscope" itemtype="http://schema.org/Product">
+    <div class="item">
+        <link itemprop="name" content="<?=$page->getName()?>" />
+        <div class="price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                <span umi:element-id="<?=$page->getId()?>" umi:field-name="price" itemprop="price">
+                    <?=$this->render($this->macros('emarket', 'price', array($page->getId())), 'emarket/price')?>
+                </span>
+            <link itemprop="itemCondition" href="http://schema.org/NewCondition" />
+        </div>
+        <?php if ($page->getValue('old_price') != 0): ?>
+            <div class="oldprice">
+                    <span umi:element-id="<?=$page->getId()?>" umi:field-name="old_price">
+                        <?=$this->render(array($this->macros('emarket', 'price', array($page->getId())), $page->getValue('old_price')), 'emarket/price')?>
+                    </span>
+            </div>
+        <?php endif; ?>
+        <?php if( $page->getObject()->getValue('common_quantity') > 0 ): ?>
+			<div class="inStock">
+				<span><?=$this->translate('in_stock')?></span>
+            </div>
+		<?php else: ?>
+			<div class="notInStock">
+				<span><?=$this->translate('not_in_stock')?></span>
+            </div>
+		<?php endif; ?>
+
+
+
+        <?php if ($page instanceof iUmiHierarchyElement): ?>
+            <?php $mainPhoto = $page->getValue('photo'); ?>
+
+            <div class="image">
+                <!-- Основная фотография товара -->
+                <?php if ($mainPhoto instanceof iUmiImageFile): ?>
+                    <a class="fancybox-group" rel="fancybox-group" href="<?=$mainPhoto->getFilePath(true) ?>">
+                        <?=$this->render(
+                            array(
+                                'id' => $page->getId(),
+                                'fieldName' => 'photo',
+                                'src' => $mainPhoto->getFilePath(true),
+                                'empty' => $this->translate('empty-photo'),
+                                'width' => 281
+                            ),
+                            'library/thumbnails'
+                        )?>
+                    </a>
+                <?php endif; ?>
+
+                <!-- Дополнительные фотографии товара -->
+                <?php foreach ($page->getValue('photos') as $photoId => $photo): ?>
+                   <?php
+                        if (!$photo instanceof iUmiImageFile) {
+                            continue;
+                        }
+                    ?>
+                    <a class="fancybox-group" rel="fancybox-group" href="<?=$photo->getFilePath(true) ?>">
+                        <?=$this->render(
+                            array(
+                                'id' => $page->getId(),
+                                'fieldName' => 'photos',
+                                'src' => $photo->getFilePath(true),
+                                'empty' => $this->translate('empty-photo'),
+                                'width' => 90
+                            ),
+                            'library/thumbnails'
+                        )?>
+                    </a>
+                <?php endforeach; ?>
+
+                <?php if ($page->getValue('new') == 1): ?>
+                    <img src="/templates/demodizzy/images/new_blue.png" class="new" />
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php $description = $page->getValue($this->translate('property-description')) ?>
+        <div class="descr" itemprop="description">
+            <?php if (!empty($description)):?>
+            <h4><?=$this->translate('item-description')?>:</h4>
+            <?php endif; ?>
+
+            <div umi:element-id="<?=$page->getId()?>" umi:field-name="description" umi:empty="<?=$this->translate('item-description')?>">
+                <?=$description?>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+        <form id="add_basket_<?=$page->getId()?>" class="options" action="<?=cmsController::getInstance()->getPreLang()?>/emarket/basket/put/element/<?=$page->getId()?>/">
+            <?=$this->render(array('page' => $page), 'catalog/table-options')?>
+
+            <?php $cart = $this->macros('emarket', 'cart');
+            $cartItems = array();
+            if (isset($cart['items']['nodes:item']) && $cart['items']['nodes:item']) {
+                foreach ($cart['items']['nodes:item'] as $item) {
+                    $cartItems[$item['page']->getId()] = $item['amount'];
+                }
+            } ?>
+
+            <?php if( $page->getObject()->getValue('common_quantity') > 0 ): ?>
+            	<input type="submit" class="button big" id="add_basket_<?=$page->getId()?>"
+					   value="<?=$this->translate('basket-add'), (isset($cartItems[$page->getId()])) ? ' ('.$cartItems[$page->getId()].')' : '' ?>"
+				/>
+            <?php endif; ?>
+            
+        </form>
+        <div class="social">
+            <div class="plusone">
+                <div class="g-plusone" data-size="small" data-count="true"></div>
+            </div>
+            <script type="text/javascript">
+                jQuery(document).ready(function(){ jQuery.getScript('//yandex.st/share/share.js', function() {
+                    new Ya.share({
+                        'element': 'ya_share1',
+                        'elementStyle': {
+                            'type': 'button',
+                            'linkIcon': true,
+                            'border': false,
+                            'quickServices': ['yaru', 'vkontakte', 'facebook', 'twitter', 'odnoklassniki', 'moimir', 'lj']
+                        },
+                        'popupStyle': {
+                            'copyPasteField': true
+                        }
+                    });
+                });
+                });
+            </script>
+            <span id="ya_share1"></span>
+
+            <?=$this->render($this->macros('vote', 'getElementRating', array(null, $page->getId())), 'vote/elementrating')?>
+
+        </div>
+        <?=$this->render(array('page' => $page, 'fieldData' => 'item_properties'), 'catalog/drawtable')?>
+        <?php if ($variables['user']['@type'] == 'sv'): ?>
+            <?=$this->render(array('page' => $page, 'fieldData' => 'manage_options'), 'catalog/drawtable')?>
+        <?php endif; ?>
+        <a href="javascript:window.print();" class="for_print"><?=$this->translate('for-print')?></a>
+
+        <?=$this->render($this->macros('emarket', 'getCompareLink', array($page->getId())), 'emarket/comparelink')?>
+    </div>
+
+    <div class="block">
+        <?=$this->render($page->getValue('recommended_items'), 'catalog/recomended')?>
+    </div>
+
+    <?=$this->render($this->macros('comments', 'insert', array($page->getId())), 'comment/insert')?>
+</div>

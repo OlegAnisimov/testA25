@@ -1,0 +1,10 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+$purchase = $this->macros('emarket', 'purchase');
+?>
+
+<h1><?=$variables['@header']?></h1>
+
+<?=$this->render(array('purchase' => $purchase, 'context' => $variables), 'emarket/' . $purchase['purchasing']['attribute:stage'] . '/' . $purchase['purchasing']['attribute:step'])?>

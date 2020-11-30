@@ -1,0 +1,77 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<?php
+	use UmiCms\Service;
+	$cmsController = cmsController::getInstance();
+	$langPrefix = $cmsController->getPreLang();
+	$host = Service::DomainDetector()->detectHost();
+	$currentUser = $this->getObjectById($variables['@id']);
+?>
+
+<?php if ($variables['@type'] != 'guest'): ?>
+	<div class="login">
+		<ul class="privat_office">
+			<li><?= $this->translate('welcome') ?></li>
+			<li>
+				<?= $currentUser->getValue('lname') ?> <?= $currentUser->getValue('fname') ?> <?= $currentUser->getValue('father_name') ?>
+			</li>
+			<?php if ($variables['@type'] == 'sv'): ?>
+				<li><a href="#" id="on_edit_in_place" class="link_transfer_class"><?= $this->translate('on-fast-edit') ?></a>
+				</li>
+				<li><a href="/admin/"><?= $this->translate('to-admin') ?></a></li>
+			<?php endif; ?>
+		</ul>
+		<div>
+			<a href="<?= $langPrefix ?>/emarket/personal/" class="office"><?=
+					$this->translate('office')
+				?></a>
+			<a href="<?= $langPrefix ?>/users/logout/" class="exit"><?=
+					$this->translate('log-out')
+				?></a>
+		</div>
+	</div>
+<?php else: ?>
+	<form class="login" action="<?= $langPrefix ?>/users/login_do/" method="post">
+		<?php if (isset($variables['@demo'])): ?>
+			<div>
+				<input type="text" value="demo" name="login"
+							 onfocus="javascript: if(this.value == '<?= $this->translate('login') ?>') {this.value = '';
+									 }"
+							 onblur="javascript: if(this.value == '') this.value = '<?= $this->translate('login') ?>';" />
+			</div>
+			<div>
+				<input type="password" value="demo" name="password"
+							 onfocus="javascript: if(this.value == '<?= $this->translate('password') ?>') this.value = '';"
+							 onblur="javascript: if(this.value == '') this.value = '<?= $this->translate('password') ?>';" />
+			</div>
+		<?php else: ?>
+			<div>
+				<input type="text" value="<?= $this->translate('login') ?>" name="login"
+							 onfocus="javascript: if(this.value == '<?= $this->translate('login') ?>') this.value = '';"
+							 onblur="javascript: if(this.value == '') this.value = '<?= $this->translate('login') ?>';" />
+			</div>
+			<div>
+				<input type="password" value="<?= $this->translate('password') ?>" name="password"
+							 onfocus="javascript: if(this.value == '<?= $this->translate('password') ?>') this.value = '';"
+							 onblur="javascript: if(this.value == '') this.value = '<?= $this->translate('password') ?>';" />
+			</div>
+		<?php endif; ?>
+
+		<div>
+			<input type="submit" class="button" value="<?= $this->translate('log-in') ?>" />
+			<a href="<?= $langPrefix ?>/users/registrate/">
+				<?= $this->translate('registration') ?>
+			</a>
+		</div>
+
+		<a href="<?= $langPrefix ?>/users/forget/">
+			<?= $this->translate('forget-password') ?>
+		</a>
+
+		<script src="/templates/demodizzy/js/ulogin.js"></script>
+		<a href="#" id="uLogin"
+			 data-ulogin="display=window;theme=classic;fields=first_name,last_name,nickname,email;providers=;hidden=;redirect_uri=http://<?= $host ?>/users/ulogin;mobilebuttons=0;">
+			<img src="http://ulogin.ru/img/button.png?version=img.2.0.0" alt="ulogin" />
+		</a>
+	</form>
+<?php endif; ?>

@@ -1,0 +1,70 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var null|iUmiHierarchyElement $variables */ ?>
+
+<?php
+	$page = $variables;
+
+	if (!$page) {
+		return;
+	}
+
+	$obj = $page->getObject();
+?>
+
+<div class="infoblock counterBanner">
+    <div class="title">
+        <h2>
+            <?=$obj->getValue('h1'); ?>
+        </h2>
+    </div>
+    <div class="body">
+        <div class="in">
+            <div><?=$obj->getValue('anons'); ?></div>
+            <div class="eventLabel">Осталось <span id="timetoevent">00 дней 00:00:00</span></div>
+            <script>
+                function timeToEvent(eventDate) {
+                    var now = new Date(),
+                        daystoED = Math.floor(Math.round(eventDate-now)/86400000),
+                        hourstoED = 24 - now.getHours() - 1,
+                        minutestoED = 60 - now.getMinutes() - 1,
+                        secondstoED = 60 - now.getSeconds() - 1,
+                        days = '';
+                    daystoED = (daystoED < 1) ? "0"+daystoED : daystoED;
+                    hourstoED = (hourstoED < 10) ? "0"+hourstoED : hourstoED;
+                    minutestoED = (minutestoED < 10) ? "0"+minutestoED : minutestoED;
+                    secondstoED = (secondstoED < 10) ? "0"+secondstoED : secondstoED;
+
+                    if(daystoED % 10 == 1) {
+                        days = ' день ';
+                    } else if (daystoED % 10 > 1 && daystoED % 10 < 5) {
+                        days = ' дня ';
+                    } else {
+                        days = ' дней ';
+                    }
+
+                    return daystoED + days + hourstoED+":"+minutestoED+":"+secondstoED+"";
+                }
+                <?php
+                    $timestamp = 0;
+                    if($obj->getValue('end_time') instanceof umiDate) {
+                        $timestamp = $obj->getValue('end_time')->timestamp;
+                    }
+                    $format = 'Y,m-1,d';
+                    $date = 'last day of next month';
+                    /*
+                     * Обратите внимание! В шаблоне использовано демострационное значение даты окончания счетчика.
+                     * Для использования даты из новости вам следует удалить переменную date.
+                    */
+                ?>
+                var now = new Date(),
+                    eventDate = new Date(<?=$this->macros('system', 'convertDate', array($timestamp, $format, $date)); ?>),
+                    span = document.getElementById('timetoevent');
+                if(now < eventDate) {
+                    window.setInterval(function(){
+                        span.innerHTML = timeToEvent(eventDate);
+                    }, 1000);
+                }
+            </script>
+        </div>
+    </div>
+</div>

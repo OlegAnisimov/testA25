@@ -1,0 +1,15 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div umi:element-id="<?=$page->getId()?>" umi:field-name="content">
+    <?=$page->getValue('content')?>
+    <?=$this->render($this->macros('faq', 'project', array(null, $page->getId())), 'faq/shortList')?>
+</div>

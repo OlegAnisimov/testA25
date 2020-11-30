@@ -1,0 +1,34 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if (isset($variables['total']) and isset($variables['per_page']) and $variables['total'] > $variables['per_page']): ?>
+    <?php $pages = $this->macros('system', 'numpages', array($variables['total'], $variables['per_page'])); ?>
+
+    <div class="numpages">
+        <div class="links">
+            <?php if(isset($pages['toprev_link']) and !isset($pages['tonext_link'])): ?>
+                <span>|</span>
+            <?php endif; ?>
+            <?php if(isset($pages['toprev_link'])): ?>
+                <a class="prev" href="<?=$pages['toprev_link']['node:value']?>">
+                    <?php  $this->translate('previous-page'); ?>
+                </a>
+            <?php endif; ?>
+            <?php if(isset($pages['tonext_link'])): ?>
+                <span>|</span>
+                <a class="next" href="<?=$pages['tonext_link']['node:value'] ?>">
+                    <?=$this->translate('next-page')?>
+                </a>
+            <?php endif; ?>
+        </div>
+        <div class="pages">
+            <?php foreach ($pages['void:pages'] as $page): ?>
+                <?php if (isset($page['attribute:is-active'])): ?>
+                    <span><?=$page['node:num']; ?></span>
+                <?php else: ?>
+                    <a href="<?=$page['attribute:link']?>"><?=$page['node:num']; ?></a>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>

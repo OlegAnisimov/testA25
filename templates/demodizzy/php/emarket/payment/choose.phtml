@@ -1,0 +1,49 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+
+<form id="payment_choose" method="post" action="<?=$variables['purchase']['purchasing']['submit_url']?>">
+    <h4>
+        <?=$this->translate('payment-type')?>
+    </h4>
+    <script>
+        window.paymentId = null;
+        jQuery('#payment_choose').submit(function(){
+            if (window.paymentId) {
+                var checkPaymentReceipt = function(id) {
+                    if (jQuery(':radio:checked','#payment_choose').attr('class') == 'receipt') {
+                        var url = "<?=$variables['purchase']['purchasing']['submit_url']?>";
+                        var win = window.open("", "_blank", "width=710,height=620,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no");
+                        win.document.write("<html><head><" + "script" + ">location.href = '" + url + "?payment-id=" + id + "'</" + "script" + "></head><body></body></html>");
+                        win.focus();
+                        return false;
+                    }
+                }
+                return checkPaymentReceipt(window.paymentId);
+            }
+            else return true;
+        });
+    </script>
+
+    <?php $i = 0; foreach ($variables['purchase']['purchasing']['items']['nodes:item'] as $item): ?>
+        <?php ++$i; ?>
+        <div>
+            <label>
+                <?php if ($i == 1 && $item['attribute:type-name'] == 'receipt'): ?>
+                    <script>
+                        window.paymentId = <?= $item['attribute:id'] ?>;
+                    </script>
+                <?php endif; ?>
+                <input type="radio" name="payment-id" class="<?=$item['attribute:type-name']?>" value="<?= $item['attribute:id'] ?>"
+                       onclick="this.form.action = <?=($item['attribute:type-name'] != 'receipt') ? "'" . $variables['purchase']['purchasing']['submit_url'] . "'" : "'/emarket/ordersList/'; window.paymentId = '{$item['attribute:id']}';"?>"
+                       <?= (isset($item['attribute:active']) && $item['attribute:active'] == 'active') ? ' checked="checked" ' : ''?>
+                />
+                <?=$item['attribute:name']?>
+        </div>
+    <?php endforeach; ?>
+
+    <div>
+        <input type="submit" value="<?=$this->translate('continue')?>" class="button big" />
+    </div>
+</form>

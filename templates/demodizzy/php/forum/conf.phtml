@@ -1,0 +1,52 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div id="forum">
+    <div class="forum_descr" umi:element-id="<?=$page->getId() ?>" umi:field-name="descr">
+        <?=$page->getValue('descr')?>
+    </div>
+    <?=$this->render($this->macros('forum', 'confs_list', array(null, $page->getId())), 'forum/confs_list')?>
+
+    <?php $conference = $this->macros('forum', 'conf') ?>
+    <?php $test_and_topic = $this->macros('forum', 'confs_list', array('null', $page->getId())); ?>
+
+    <?php if ($conference['total']): ?>
+        <table>
+            <thead>
+            <tr>
+                <th><?=$this->translate('forum-topics')?></th>
+                <th><?=$this->translate('forum-answers')?></th>
+                <th><?=$this->translate('forum-last-message')?></th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($conference['lines']['nodes:item'] as $line):?>
+                    <tr>
+                        <td width="200">
+                            <a href="<?=$line['attribute:link']?>" class="forum" umi:element-id="<?=$line['attribute:id']?>" umi:field-name="name">
+                                <?=$line['node:name']?>
+                            </a>
+                        </td>
+                        <td align="center">
+                            <?=$line['attribute:messages_count']?>
+                        </td>
+                        <td>
+                            <?=$this->render($this->macros('forum', 'topic_last_message', array($line['attribute:id'])), 'forum/topic_last_message')?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+    <?php if(!isset($test_and_topic['total'])): ?>
+        <?=$this->render($this->macros('forum', 'topic_post', array($page->getId())), 'forum/topic_post')?>
+    <?php endif; ?>
+</div>

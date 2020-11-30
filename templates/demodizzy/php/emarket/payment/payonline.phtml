@@ -1,0 +1,22 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<form action="<?= $variables['purchase']['purchasing']['formAction'] ?>" method="post">
+    <input type="hidden" name="MerchantId" value="<?= $variables['purchase']['purchasing']['MerchantId'] ?>"/>
+    <input type="hidden" name="OrderId" value="<?= $variables['purchase']['purchasing']['OrderId'] ?>"/>
+    <input type="hidden" name="Currency" value="<?= $variables['purchase']['purchasing']['Currency'] ?>"/>
+    <input type="hidden" name="SecurityKey" value="<?= $variables['purchase']['purchasing']['SecurityKey'] ?>"/>
+    <input type="hidden" name="ReturnUrl" value="<?= $variables['purchase']['purchasing']['ReturnUrl'] ?>"/>
+    <!-- NB! This field should exist for proper system working -->
+    <input type="hidden" name="Amount" value="<?= $variables['purchase']['purchasing']['Amount'] ?>"/>
+    <input type="hidden" name="order-id" value="<?= $variables['purchase']['purchasing']['orderId'] ?>"/>
+
+    <div>
+        <?= $this->translate('payment-redirect-text') ?> PayOnline.
+    </div>
+
+    <div>
+        <input type="submit" value="<?= $this->translate('pay') ?>" class="button big"/>
+    </div>
+</form>
+<?=$this->render(array(), 'emarket/payment/form-send')?>

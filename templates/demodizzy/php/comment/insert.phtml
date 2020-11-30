@@ -1,0 +1,26 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<hr /><a name="comments"></a>
+<h4><?=$this->translate('comments')?>:</h4>
+<div itemprop="review" itemscope="itemscope" itemtype="http://schema.org/Review" class="comments" umi:module="comments" umi:add-method="none" umi:region="list" umi:sortable="sortable">
+
+    <?=$this->render(array('comments' => $variables['void:lines']), 'comment/view')?>
+
+    <?=$this->render(array('total' => $variables['total'], 'per_page' => $variables['per_page']), 'library/numpages')?>
+
+    <?php
+    if ($this->isSetCommonVar('user')) {
+        $user = $this->getCommonVar('user');
+
+        if ($user['@type'] == 'guest') {
+            echo $this->render($variables, 'comment/addFormGuest');
+        } else {
+            echo $this->render($variables, 'comment/addFormUser');
+        }
+    }
+    ?>
+</div>
+
+<?=$this->render($this->macros('comments', 'insertVkontakte'), 'comment/insertVkontakte')?>
+<?=$this->render($this->macros('comments', 'insertFacebook'), 'comment/insertFacebook')?>

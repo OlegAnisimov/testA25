@@ -1,0 +1,42 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+	/** @var array $visibleFields Поля для отображения */
+	$visibleFields = array(
+		'name'  => 'Наименование организации', 
+		'inn'   => 'ИНН', 
+		'kpp'   => 'КПП', 
+		'email' => 'E-mail для доставки счета'
+	);
+?>
+
+<?php foreach ($visibleFields as $name => $title): ?>
+	
+	<?php foreach ($variables['form']['void:groups'] as $group): ?>
+		<?php if (!isset($variables['isHeaderShow']) || (isset($variables['isHeaderShow']) && $variables['isHeaderShow']) ): ?>
+		<h4>
+			<?=$group['attribute:title']?>
+		</h4>
+		<?php endif; ?>
+
+			<?php foreach ($group['void:fields'] as $field): ?>
+				<?php if ($field['attribute:name'] === $name): ?>
+					<?php
+						if ($name === 'email') {
+							$field['node:value'] = $variables['customerEmail'];
+						}
+					?>
+					<?php $tip = isset($field['attribute:tip']) ? $field['attribute:tip'] : '' ?>
+					<div>
+						<label <?=$tip != '' ? "title=\"${tip}\"" : ''?> class="required">
+							<span><?=$title?>:</span>
+								<?=$this->render(array('field' => $field), 'data/formField/' . $field['attribute:type'])?>
+						</label>
+					</div>
+				<?php endif; ?>
+			<?php endforeach; ?>
+
+	<?php endforeach; ?>
+
+<?php endforeach; ?>

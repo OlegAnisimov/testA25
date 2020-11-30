@@ -1,0 +1,6 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<span class="author-info" umi:object-id="<?=$variables['user_id']?>">
+    <?=isset($variables['fname']) ? $variables['fname'] : ''?> <?=isset($variables['nickname']) ? $variables['nickname'] : ''?> <?=isset($variables['lname']) ? $variables['lname'] : ''?>
+</span>

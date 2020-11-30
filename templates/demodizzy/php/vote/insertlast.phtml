@@ -1,0 +1,44 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<div class="infoblock">
+    <div class="title"><h2><?=$this->translate('vote')?></h2></div>
+    <div class="body">
+        <div class="in">
+            <div class="vote_text">
+                <?=$variables['text']?>
+            </div>
+            <?php if (isset($variables['items']['nodes:item'][0]['attribute:id'])): ?>
+                <form id="postForm_<?=$variables['id']?>" onsubmit="site.forms.vote(this, <?=$variables['id']?>); return false;">
+                    <ul class="vote">
+                        <?php foreach ($variables['items']['nodes:item'] as $k => $voteItem): ?>
+                            <li>
+                                <label for="item_<?=$k?>">
+                                    <input type="radio" id="item_<?=$k?>" name="vote_results" value="<?=$voteItem['attribute:id']?>" />
+                                    <?=$voteItem['node:item_name']?>
+                                </label>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <input class="button" type="submit" value="<?=$this->translate('reply')?>" />
+                </form>
+            <?php elseif (isset($variables['items']['nodes:item'][0]['attribute:score'])): ?>
+                <table class="vote">
+                    <?php foreach ($variables['items']['nodes:item'] as $k => $voteItem): ?>
+                        <tr>
+                            <td><?=$voteItem['node:item_name']?>:</td>
+                            <td class="right"><span><?=$voteItem['attribute:score']?><span></td>
+                            <td class="right"><span><?=$voteItem['attribute:score-rel']?>%<span></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <td><?=$this->translate('total-votes')?>:</td>
+                        <td class="right"><strong><?=$variables['total_posts']?></strong></td>
+                        <td class="right"></td>
+                    </tr>
+                </table>
+            <?php else: ?>
+                <ul><li><?=$this->translate('poll-no-results')?></li></ul>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

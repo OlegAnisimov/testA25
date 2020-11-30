@@ -1,0 +1,21 @@
+User-Agent: Googlebot
+%disallow_umi_pages%
+Disallow: /webforms/*
+Disallow: /emarket/*
+Disallow: /users/*
+
+User-Agent: Yandex
+%disallow_umi_pages%
+Disallow: /webforms/*
+Disallow: /emarket/*
+Disallow: /users/*
+
+User-Agent: *
+%disallow_umi_pages%
+Disallow: /webforms/*
+Disallow: /emarket/*
+Disallow: /users/*
+
+Host: https://ozeniplik.ru
+Sitemap: https://ozeniplik.ru/sitemap.xml
+Crawl-delay: 3

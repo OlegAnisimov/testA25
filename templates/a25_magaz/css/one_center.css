@@ -1,0 +1,9 @@
+#main #page div.left,
+#main #page div.right {
+	display: none
+}
+#main #page div.center {
+	margin: 0 15px 0 15px;
+	*width: 958px;
+	_width: 952px;
+}

@@ -1,0 +1,30 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php $page = $variables['full:page'] ?>
+<?php $lastList = $this->macros('news', 'lastlist') ?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<dl class="news" umi:button-position="top right" umi:element-id="<?= $page->getId() ?>" umi:region="list" umi:module="news" umi:method="lastlist" umi:sortable="sortable">
+    <?php foreach ($lastList['void:lines'] as $newsItem): ?>
+        <?php $itemObject = $this->getPageById($newsItem['attribute:id']) ?>
+        <div umi:element-id="<?= $newsItem['attribute:id'] ?>" umi:region="row">
+            <dt>
+            <div class="date" umi:field-name="publish_time" umi:empty="<?= $this->translate('empty-page-date') ?>">
+                <?= date('d.m.Y', $newsItem['attribute:publish_time']) ?>
+            </div>
+
+            <a href="<?= $newsItem['attribute:link'] ?>" umi:field-name="name" umi:delete="delete" umi:empty="<?= $this->translate('empty-page-name') ?>">
+                <?= $newsItem['void:header'] ?>
+            </a>
+            </dt>
+            <dd umi:field-name="anons" umi:empty="<?= $this->translate('empty-page-anons') ?>">
+                <?= $itemObject->getValue('anons') ?>
+            </dd>
+        </div>
+    <?php endforeach; ?>
+</dl>
+<?=$this->render(array('total' => $lastList['total'], 'per_page' => $lastList['per_page']), 'library/numpages')?>

@@ -1,0 +1,89 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+$cart = $this->macros('emarket', 'cart');
+$langPrefix = cmsController::getInstance()->getPreLang();
+?>
+
+<h1><?=$variables['@header']?></h1>
+
+<?=$this->render(array('steps' => $cart['steps'], 'method' => 'cart'), 'emarket/steps')?>
+
+<?php if (!isset($cart['items']['nodes:item'])): ?>
+<div class="basket">
+    <h4 class="empty-content"><?=$this->translate('basket-empty')?></h4>
+    <p><?=$this->translate('return-to-catalog')?></p>
+</div>
+<?php else: ?>
+    <?php
+    $siteInfo = $this->getPageByPath('contacts');
+    ?>
+    <div class="basket">
+        <table>
+            <thead>
+            <tr>
+                <td>
+                    <?=$this->translate('basket-item')?>
+                </td>
+                <td>
+                    <?=$this->translate('price')?>, <?=isset($cart['summary']['price']['attribute:prefix']) ? $cart['summary']['price']['attribute:prefix'] : ''?><?=isset($cart['summary']['price']['attribute:suffix']) ? $cart['summary']['price']['attribute:suffix'] : ''?> x <?=$this->translate('amount')?>
+                </td>
+                <td>
+                    <?=$this->translate('item-discount')?>, <?=isset($cart['summary']['price']['attribute:prefix']) ? $cart['summary']['price']['attribute:prefix'] : ''?><?=isset($cart['summary']['price']['attribute:suffix']) ? $cart['summary']['price']['attribute:suffix'] : ''?>
+                </td>
+                <td>
+                    <?=$this->translate('sum')?>, <?=isset($cart['summary']['price']['attribute:prefix']) ? $cart['summary']['price']['attribute:prefix'] : ''?><?=isset($cart['summary']['price']['attribute:suffix']) ? $cart['summary']['price']['attribute:suffix'] : ''?>
+                </td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($cart['items']['nodes:item'] as $item): ?>
+                    <?=$this->render(array('item' => $item), 'emarket/cart-item')?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <div class="summary">
+            <?php if (isset($variables['price']['discount'])): ?>
+                <div class="info">
+                    <?=$this->translate('order-bonus')?>:
+                    <span class="cart_discount">
+                        <?=$this->render($cart['summary'], 'emarket/bonusPrice')?>
+                    </span>
+                </div>
+            <?php endif; ?>
+
+            <div class="info">
+                <?=$this->translate('order-discount')?>:
+                <span class="cart_discount">
+                    <?=$this->render($cart['summary'], 'emarket/discountPrice')?>
+                </span>
+            </div>
+
+            <?php if (isset($cart['summary']['price']['delivery'])): ?>
+            <div class="info">
+                <?=$this->translate('delivery')?>:
+                <?=$this->render($cart['summary'], 'emarket/deliveryPrice')?>
+            </div>
+            <?php endif; ?>
+
+            <div class="size2 tfoot">
+                <?=$this->translate('summary-price')?>:
+                <?=isset($cart['summary']['price']['attribute:prefix']) ?
+                    $cart['summary']['price']['attribute:prefix'] : null ?>
+                <span class="cart_summary size3">
+                    <?=isset($cart['summary']['price']['actual']) ?
+                        $cart['summary']['price']['actual'] : null ?>
+                </span>
+                <?=isset($cart['summary']['price']['attribute:suffix']) ?
+                    $cart['summary']['price']['attribute:suffix'] : null ?>
+            </div>
+        </div>
+        <div class="cart-buttons">
+            <a href="<?=$langPrefix?>/" class="toCatalog"><?=$this->translate('continue-shopping')?></a>
+            <a href="<?=$this->macros("emarket", "getPurchaseLink")?>" class="basket_purchase size2"><?=$this->translate('begin-purchase')?></a>
+        </div>
+        <div class="clear"></div>
+    </div>
+<?php endif; ?>

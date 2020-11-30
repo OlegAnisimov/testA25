@@ -1,0 +1,22 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<div class="basket_info">
+    <div>
+        <a href="/emarket/cart/"><?=$this->translate('basket')?></a>
+        <span class="basket_info_summary">
+            <?php if (isset($variables['summary']['amount']) && $variables['summary']['amount'] < 1): ?>
+                <?=$this->translate('basket-empty')?>
+            <?php else: ?>
+                <span>
+                    <?=$variables['summary']['amount']?> <?=$this->translate('amount-prefix')?>
+                </span>
+                <?=$this->translate('basket-items-text')?>
+                <?=isset($variables['summary']['price']['attribute:prefix']) ? $variables['summary']['price']['attribute:prefix'] : ''?>
+                <?=isset($variables['summary']['price']['actual']) ? $variables['summary']['price']['actual'] : 0?>
+                <?=isset($variables['summary']['price']['attribute:suffix']) ? $variables['summary']['price']['attribute:suffix'] : ''?>.
+            <?php endif; ?>
+        </span>
+    </div>
+</div>

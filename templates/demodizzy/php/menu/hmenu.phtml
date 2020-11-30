@@ -1,0 +1,16 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<ul>
+<?php foreach($variables['nodes:item'] as $item): ?>
+    <?php if (strstr($item['attribute:link'], '/help/')):?>
+        <li>
+            <a href="<?=$item['attribute:link']?>" class="help"><?=$item['node:text']?></a>
+        </li>
+    <?php else: ?>
+        <li>
+            <a href="<?=$item['attribute:link']?>"><?=$item['node:text']?></a>
+        </li>
+    <?php endif;?>
+<?php endforeach; ?>
+</ul>

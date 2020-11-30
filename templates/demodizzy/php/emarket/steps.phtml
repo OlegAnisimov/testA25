@@ -1,0 +1,51 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+$langPrefix = cmsController::getInstance()->getPreLang();
+$result = end($variables['steps']['+item']);
+$isResult = $result['@status'] == 'active';
+?>
+
+<table class="steps-of-payment">
+    <tr>
+        <td class="<?=(isset($variables['method']) && $variables['method'] == 'cart') ? 'active' : 'complete' ?>">
+            <?php if(!$isResult): ?>
+                <a href="<?=$langPrefix?>/emarket/cart/">
+            <?php endif; ?>
+                <?=$this->translate('basket')?>
+            <?php if(!$isResult): ?>
+                </a>
+            <?php endif; ?>
+        </td>
+
+        <?php
+        $i = 0;
+        $count = umiCount($variables['steps']['+item']);
+        foreach ($variables['steps']['+item'] as $item) {
+            ++$i;
+
+            switch (true) {
+                case $item['@status'] == 'incomplete' && $count == $i:
+                case $item['@status'] == 'active' && $count == $i: {
+                    echo "<td class=\"{$item['@status']} result\">
+                        {$item['@name']}
+                    </td>";
+                    break;
+                }
+                case $item['@status'] == 'active':
+                case $item['@status'] == 'incomplete':
+                case $item['@status'] == 'complete' && $isResult: {
+                    echo "<td class=\"{$item['@status']}\">
+                        {$item['@name']}
+                    </td>";
+                    break;
+                }
+                case $item['@status'] == 'complete': {
+                    echo "<td class=\"{$item['@status']}\"><a href=\"{$langPrefix}{$item['@link']}\">{$item['@name']}</a></td>";
+                    break;
+                }
+            }
+        }?>
+    </tr>
+</table>

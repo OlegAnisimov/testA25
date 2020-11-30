@@ -1,0 +1,33 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<div id="blog_items">
+    <?php foreach ($variables['void:lines'] as $item): ?>
+        <div class="blog_item">
+            <div class="blog_header">
+                <a href="<?=$item['post_link']?>" umi:element-id="<?=$item['attribute:id']?>" umi:field-name="name" umi:delete="delete">
+                    <strong><?=$item['name']?></strong>
+                </a>
+                <?php if (isset($item['publish_time'])):?>
+                    <span umi:element-id="<?=$item['attribute:id']?>" umi:field-name="publish_time">
+                        <?=$this->translate('comment-posted')?> <?= date('d.m.Y', $item['publish_time'])?>
+                    </span>
+                <?php endif; ?>
+                <?php if (isset($item['tags'])):?>
+                    <span umi:element-id="<?=$item['attribute:id']?>" umi:field-name="tags">
+                        (<?=$this->render($item['tags'], 'blogs20/tagList')?>)
+                    </span>
+                <?php endif; ?>
+            </div>
+            <div umi:element-id="<?=$item['attribute:id']?>" umi:field-name="content" umi:delete="delete">
+                <?=(isset($item['cut']) ? $item['cut'] : '')?>
+            </div>
+            <div class="comments">
+                <a href="<?=$item['post_link']?>#subitems"><?=$this->translate('comments')?> (<?=$item['comments_count']?>)</a> | <a href="<?=$item['post_link']?>#additem"><?=$this->translate('comment')?></a>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<?=$this->render(array('total' => $variables['total'], 'per_page' => $variables['per_page']), 'library/numpages')?>

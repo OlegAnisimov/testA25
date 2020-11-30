@@ -1,0 +1,85 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<?php 
+	$legalPersons = $variables['purchase']['purchasing']['items']['nodes:item'] 
+?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+
+<form id="invoice" method="post" action="do">
+    
+	<?php if (isset($legalPersons[0])): ?>
+		<h4><?=$this->translate('choose-legal_person')?>:</h4>
+	<?php endif; ?>
+		
+    <?php $i = 0; foreach ($legalPersons as $item): ?>
+        <?php ++$i; ?>
+        <div class="form_element">
+            <label>
+                <input type="radio" name="legal-person" value="<?=$item['attribute:id']?>"
+                       <?=($i == 1) ? ' checked="checked" ' : ''?>
+                />
+                <?=(isset($item['attribute:name']) ? $item['attribute:name'] : '')?>
+            </label>
+        </div>
+    <?php endforeach; ?>
+
+    <div>
+        <label>
+			<?php if (isset($legalPersons[0])): ?>
+				<input type="radio" name="legal-person" value="new" />
+				 <?=$this->translate('new-legal-person')?>
+			<?php else: ?>
+				<input type="hidden" name="legal-person" value="new" />
+			<?php endif; ?>
+           
+        </label>
+    </div>
+	
+    <div id="new-legal-person">
+		<?php 
+			$customerEmail = '';
+			if (isset($variables['purchase']['purchasing']['customer']['attribute:e-mail'])) {
+				$customerEmail = $variables['purchase']['purchasing']['customer']['attribute:e-mail'];
+			}
+		?> 
+        <?= $this->render(
+				array(
+					'form' => $this->macros('data', 'getCreateForm', array($variables['purchase']['purchasing']['attribute:type-id'])), 
+					'isHeaderShow' => false, 
+					'customerEmail' => $customerEmail
+				), 
+				'emarket/payment/legal-person-form'
+			)
+		?>
+    </div>
+
+    <div>
+        <input type="submit" value="<?=$this->translate('make-bill')?>" class="button big" />
+    </div>
+</form>
+<script>
+	
+	
+	jQuery(document).ready(function() {
+		jQuery('#invoice').submit(function(){
+			return site.forms.emarket.checkFields(this);
+		});
+		
+		/** Hiding text fields logic */
+		if (jQuery('input[type=radio][value!=new]', '#invoice').length > 0) {
+			if (jQuery('input[type=radio]:checked', '#invoice').val() !== 'new'){
+				jQuery('#new-legal-person').hide();
+			}
+		}
+		
+		jQuery('input[type=radio]', '#invoice').click(function() {
+			if (jQuery(this).val() !== 'new') {
+				jQuery('#new-legal-person').hide();
+			} else {
+				jQuery('#new-legal-person').show();
+			}
+		});
+	});
+    
+</script>

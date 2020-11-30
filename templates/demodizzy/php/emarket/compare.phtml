@@ -1,0 +1,202 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$compare = $this->macros('emarket', 'compare');
+$langPrefix = cmsController::getInstance()->getPreLang();
+?>
+
+<h1><?=$variables['@header']?></h1>
+
+<?php if (isset($compare['void:fields'][0])): ?>
+    <div class="catalog">
+        <table class="compare">
+            <thead>
+            <tr>
+                <th></th>
+                <?php foreach ($compare['headers']['items']['nodes:item'] as $header): ?>
+                    <th>
+                        <a href="<?=$langPrefix?><?=$header['attribute:link']?>" class="title">
+                            <?=$header['node:title']?>
+                        </a>
+                    </th>
+                <?php endforeach; ?>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="name"></td>
+                    <?php foreach ($compare['headers']['items']['nodes:item'] as $header): ?>
+                    <td>
+                        <a href="<?=$langPrefix?><?=$header['attribute:link']?>" class="image">
+                            <?php $image = $this->getPageById($header['attribute:id']) ?>
+                            <?=$this->render(
+                                array(
+                                    'id' => $image->getId(),
+                                    'fieldName' => 'photo',
+                                    'src' => $image->getValue('photo'),
+                                    'object' => $image,
+                                    'empty' => $this->translate('empty-photo'),
+                                    'width' => 115,
+                                    'height' => 90
+                                ),
+                                'library/thumbnails'
+                            )?>
+                        </a>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+                <tr>
+                    <td class="name"><?=$this->translate('in_stock')?></td>
+                    <?php foreach ($compare['headers']['items']['nodes:item'] as $header): ?>
+                    <td>
+                        <?php if( $this->getPageById($header['attribute:id'])->getObject()->getValue('common_quantity') > 0 ): ?>
+							<div class="inStock">
+								<span><?=$this->translate('in_stock')?></span>
+							</div>
+						<?php else: ?>
+							<div class="notInStock">
+								<span><?=$this->translate('not_in_stock')?></span>
+							</div>
+						<?php endif; ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+                <tr>
+                    <td class="name"><?=$this->translate('price')?></td>
+                    <?php foreach ($compare['headers']['items']['nodes:item'] as $header): ?>
+                    <td>
+                        <div class="price">
+                            <span>
+                                <?=$this->render($this->macros('emarket', 'price', array($header['attribute:id'])), 'emarket/price')?>
+                            </span>
+                        </div>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+
+                <?php foreach ($compare['fields']['nodes:field'] as $field): ?>
+                <?php
+                    if ($field['attribute:name'] == 'photo') {
+                        continue;
+                    }
+                ?>
+                <?php
+                    $firstCell = current($field['values']['nodes:item']);
+                    if (
+                        isset($firstCell['value']) &&
+                        !$firstCell['value'] instanceof umiObjectPropertyImgFile &&
+                        !$firstCell['value'] instanceof umiObjectPropertyWYSIWYG &&
+                        !$firstCell['value'] instanceof umiObjectPropertySymlink
+                    ): ?>
+                <tr>
+                    <td class="name"><?=$field['attribute:title']?></td>
+                    <?php foreach ($field['values']['nodes:item'] as $itemValue): ?>
+                    <td>
+                        <?php
+                        /** @var umiField $fieldValue */
+                        if (isset($itemValue['value'])) {
+                            $fieldValue = $itemValue['value'];
+
+                            switch (true) {
+                                case $fieldValue instanceof umiObjectPropertyRelation: {
+                                    $relations = $fieldValue->getValue();
+
+                                    if (is_array($relations)) {
+                                        $relationText = array();
+                                        foreach ($relations as $relation) {
+                                            $relationText[] = $this->getObjectById($relation)->getName();
+                                        }
+                                        $relationText = implode(', ', $relationText);
+                                    } else {
+                                        $object = $this->getObjectById($relations);
+                                        $relationText = $object->getName();
+                                    }
+                                    echo $relationText;
+                                    break;
+                                }
+                                case $fieldValue instanceof umiObjectPropertyBoolean: {
+                                    echo $fieldValue->getValue() ? $this->translate('yes') : $this->translate('no');
+                                    break;
+                                }
+                                case $fieldValue instanceof umiObjectPropertySymlink: {
+                                    $relations = $fieldValue->getValue();
+                                    $relationsValue = array();
+                                    foreach ($relations as $relation) {
+                                        $relationsValue[] = $relation->getName();
+                                    }
+                                    echo implode(', ', $relationsValue);
+                                    break;
+                                }
+                                case $fieldValue instanceof umiObjectPropertyOptioned: {
+                                    $optionedArray = $fieldValue->getValue();
+                                    $optionedRes = array();
+                                    foreach ($optionedArray as $optionsItem) {
+                                        $optionedRes[] = $this->getObjectById($optionsItem['rel'])->getName();
+                                    }
+                                    echo implode(', ', $optionedRes);
+                                    break;
+                                }
+                                case $fieldValue instanceof umiObjectPropertyPrice: {
+                                    if($fieldValue->getValue() > 0) {
+                                        echo
+                                            "<div class='oldprice'>
+                                                <span>" .
+                                            $this->render(array($this->macros('emarket', 'price', array($header['attribute:id'])), $fieldValue->getValue()), 'emarket/price') .
+                                            "</span>
+                                        </div>";
+                                    }
+                                    break;
+                                }
+								case $fieldValue instanceof umiObjectPropertyMultipleImgFile: {
+									/** umiImageFile[] $images */
+									$images = $fieldValue->getValue();
+
+									/** @var umiImageFile $image */
+									foreach ($images as $image) {
+										echo "<img src='{$image->getFilePath(true)}' width='115'><br>";
+									}
+
+									break;
+								}
+                                default : {
+                                    echo $fieldValue->getValue();
+                                }
+                            }
+                        }
+                        ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+                <td></td>
+                <?php foreach ($compare['headers']['items']['nodes:item'] as $header): ?>
+                    <?php
+                    $isOptions = "false";
+                    $headerPage = $this->getPageById($header['attribute:id']);
+                    $headerPageFields = umiObjectTypesCollection::getInstance()->getType($headerPage->getObjectTypeId())->getFieldsGroupByName('catalog_option_props')->getFields();
+                    foreach ($headerPageFields as $headerPageField) {
+                        if ($headerPage->getValue($headerPageField->getName())) {
+                            $isOptions = "true";
+                            break;
+                        }
+                    }
+                    ?>
+                    <td>
+                        <?php if( $this->getPageById($header['attribute:id'])->getObject()->getValue('common_quantity') > 0 ): ?>
+                            <a href="<?=$langPrefix?>/emarket/basket/put/element/<?=$header['attribute:id']?>/"
+                                id="add_basket_<?=$header['attribute:id']?>" class="button basket_list options_<?=$isOptions?>">
+                                <?=$this->translate('basket-add')?>
+                            </a>	
+                        <?php endif; ?>
+                    </td>
+                <?php endforeach; ?>
+            </tfoot>
+        </table>
+    </div>
+<?php endif; ?>

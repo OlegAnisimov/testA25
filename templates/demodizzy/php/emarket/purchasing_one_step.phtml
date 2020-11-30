@@ -1,0 +1,141 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+    $purchasing = $this->macros('emarket', 'purchasing_one_step');
+	$selfDeliveries = $purchasing['onestep']['delivery']['delivery']['items']['nodes:item'];
+?>
+        <form class="without-steps" action="/emarket/saveInfo/" method="POST">
+            
+			<?php if(isset($purchasing['onestep']['customer'])): ?>
+                <div class="customer onestep">
+                    <?=$this->render(array('form' => $this->macros('data', 'getEditForm', array($purchasing['onestep']['customer']['@id']))), 'data/formTemplate')?>
+                </div>
+            <?php endif; ?>
+			
+			<?php if(isset($purchasing['onestep']['delivery'])): ?>
+                <div class="delivery_address onestep">
+                    <h4><?=$this->translate('choose-delivery-address')?></h4>
+					<input type="hidden" name="delivery-address" value="new" />
+					<?php $i = 0; foreach ($selfDeliveries as $deliveryItem): ?>
+						<?php ++$i; ?>
+						<div>
+							<label>
+								<input type="radio" name="delivery-address" value="<?=$deliveryItem['attribute:id']?>" 
+									   data-type="<?=$deliveryItem['attribute:type-class-name']?>"
+									<?php if ($i == 1 || (isset($deliveryItem['attribute:active']) && $deliveryItem['attribute:active'] == 'active')) { echo ' checked="checked" ';} ?>
+									/>
+								<?=$deliveryItem['attribute:name']?>
+							</label>
+						</div>
+					<?php endforeach; ?>
+					
+                   
+					<?php if (isset($purchasing['onestep']['delivery']['items'])):?>
+                        <?php $i = 0; foreach ($purchasing['onestep']['delivery']['items']['nodes:item'] as $deliveryItem): ?>
+                            <?php ++$i; ?>
+                            <div class="form_element">
+                                <label>
+                                    <input type="radio" name="delivery-address" value="<?=$deliveryItem['attribute:id']?>"
+                                        <?php if ($i == 1 || $deliveryItem['attribute:active'] == 'active') { echo ' checked="checked" ';} ?>
+                                        />
+                                    <?php
+                                        $address = $this->getObjectById($deliveryItem['attribute:id']);
+                                        $fields = $address->getType()->getAllFields(true);
+
+                                        $addressResult = array();
+                                        /** @var umiField $field */
+                                        foreach ($fields as $field) {
+                                            if($field->getName() == 'country') {
+                                                $addressResult[] = $this->getObjectById($address->getValue($field->getName()))->getName();
+                                            } else {
+                                                $addressResult[] = $address->getValue($field->getName());
+                                            }
+                                        }
+                                        echo implode(', ', $addressResult);
+                                    ?>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+					<?php endif; ?>
+					
+						<?php if ((isset($purchasing['onestep']['delivery']['items']) &&
+								umiCount($purchasing['onestep']['delivery']['items']['nodes:item']) > 0 &&
+								  $purchasing['onestep']['delivery']['only_self_delivery'] != 1) ||
+								  ($purchasing['onestep']['delivery']['self_delivery_exist'] == 1 &&
+								  $purchasing['onestep']['delivery']['only_self_delivery'] != 1)
+							): ?>
+							<div>
+								<label>
+									<input type="radio" name="delivery-address" value="new" />
+									<?=$this->translate('new-delivery-address')?>
+								</label>
+							</div>
+						<?php endif; ?>
+						
+						<?php if ($purchasing['onestep']['delivery']['only_self_delivery'] != 1 &&
+								  $purchasing['onestep']['delivery']['attribute:type-id']): ?>
+							<div id="new-address">
+								<?=$this->render(array('form' => $this->macros('data', 'getCreateForm', array($purchasing['onestep']['delivery']['attribute:type-id'])), 'isHeaderShow' => false), 'data/formTemplate')?>
+							</div>
+						<?php endif; ?>
+                   
+					<script>
+						jQuery(document).ready(function() {
+							var block = ".delivery_address.onestep";
+							jQuery(block).submit(function() {
+								return site.forms.emarket.checkFields(this);
+							});
+
+							site.forms.emarket.toggleNewObjectForm(block, '#new-address');
+						});
+					</script>
+                </div>
+			
+			
+            <?php endif; ?>
+			
+            <?php if(isset($purchasing['onestep']['delivery_choose'])): ?>
+                <div class="dychoose onestep">
+                    <h4><?=$this->translate('delivery-agent')?></h4>
+					
+                    <?php $i = 0; foreach ($purchasing['onestep']['delivery_choose']['items']['nodes:item'] as $item): ?>
+                        <?php ++$i;?>
+                        <div>
+                            <label>
+                                <input type="radio" name="delivery-id" value="<?=$item['attribute:id']?>"
+                                    <?=($i == 1) ? 'checked="checked"' : ''?>
+                                    />
+
+                                <?=$item['attribute:name']?> - <?=$this->render($this->macros('emarket', 'applyPriceCurrency', array(isset($item['attribute:price']) ? $item['attribute:price'] : 0)), 'emarket/price')?>
+                            </label>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if($purchasing['onestep']['payment']['items']): ?>
+                <div class="payment onestep">
+                    <h4><?=$this->translate('payment-type')?></h4>
+
+                    <?php $i = 0; foreach ($purchasing['onestep']['payment']['items']['nodes:item'] as $item): ?>
+                        <?php ++$i; ?>
+                        <div>
+                            <label>
+                                <?php if ($i == 1 && $item['attribute:type-name'] == 'receipt'): ?>
+                                    <script>
+                                        window.paymentId = <?= $item['attribute:id'] ?>;
+                                    </script>
+                                <?php endif; ?>
+                                <input type="radio" name="payment-id" class="<?=$item['attribute:type-name']?>" value="<?= $item['attribute:id'] ?>"
+									
+                                    <?= (isset($item['attribute:active']) && $item['attribute:active'] == 'active') || ($i == 1) ? ' checked="checked" ' : ''?>
+                                    />
+                                <?=$item['attribute:name']?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+			
+            <input type="submit" value="<?=$this->translate('continue')?>" class="button big" />
+        </form>

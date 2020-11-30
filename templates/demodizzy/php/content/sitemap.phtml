@@ -1,0 +1,18 @@
+<?php
+	/** @var umiTemplaterPHP $this */
+	$sitemap = $this->macros('content', 'sitemap');
+	$pageList = $sitemap['items']['nodes:item'];
+?>
+
+<ul>
+	<?php foreach ($pageList as $page) : ?>
+		<li umi:element-id="<?= $page['attribute:id'] ?>">
+			<a href="<?= $page['attribute:link'] ?>"
+			   umi:field-name="name"
+			   umi:delete="delete"
+			   umi:empty="<?=$this->translate('empty-section-name')?>">
+				<?= $page['attribute:name'] ?>
+			</a>
+		</li>
+	<?php endforeach; ?>
+</ul>

@@ -1,0 +1,43 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php if (isset($variables['nodes:group'])) : ?>
+	<?php $categoryId = (isset($variables['attribute:category-id'])) ? $variables['attribute:category-id'] : 'undefined' ?>
+	<form class="catalog_filter" data-category="<?=$categoryId?>">
+		<?php
+		$fieldsList = array();
+		$groups = (isset($variables['nodes:group'])) ? $variables['nodes:group'] : array();
+		foreach ($groups as $group) {
+			$fields = (isset($group['nodes:field'])) ? $group['nodes:field'] : array();
+			foreach ($fields as $field) {
+				$fieldsList[] = $field;
+			}
+		}
+		?>
+		<div class="filters">
+			<?php foreach($fieldsList as $num => $field): ?>
+				<?php if ($num % 2 == 0): ?>
+					<div class="row">
+						<?php $nextField = isset($fieldsList[$num + 1]) ? $fieldsList[$num + 1] : null; ?>
+						<div class="cell">
+							<?= $this->render($field, 'catalog/search-field') ?>
+						</div>
+						<?php if ($nextField): ?>
+							<div class="cell">
+								<?= $this->render($nextField, 'catalog/search-field') ?>
+							</div>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		</div>
+
+		<div class="clear"></div>
+		<div class="buttons">
+			<input class="button" type="submit" value="<?=$this->translate('apply')?>" id="show_result"/>
+			<input class="button" type="button" value="<?=$this->translate('reset')?>" id="reset" />
+		</div>
+	</form>
+<?php endif; ?>

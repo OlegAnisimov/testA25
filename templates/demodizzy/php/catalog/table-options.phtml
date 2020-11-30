@@ -1,0 +1,51 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+/** @var umiHierarchyElement $page */
+$page = $variables['page'];
+$optionProps = $page->getObject()->getType()->getFieldsGroupByName('catalog_option_props');
+?>
+
+<?php if(true): ?>
+    <?php
+    $isShowHeader = false;
+    /** @var umiField */
+    foreach($optionProps->getFields() as $field):
+        $values = $page->getValue($field->getName());
+        if (umiCount($values)):
+            if(!$isShowHeader) {
+                echo '<h4>' . $optionProps->getTitle() . ':</h4>';
+                $isShowHeader = true;
+            }
+    ?>
+
+            <table class="object">
+                <thead>
+                    <tr>
+                        <th colspan="3"><?=$field->getTitle()?>:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $i=0;
+                        foreach ($values as $value):
+                        $currentOption = $this->getObjectById($value['rel']);
+                    ?>
+                        <tr>
+                            <td style="width:20px;">
+                                <input type="radio" name="options[<?=$field->getName()?>]" value="<?=$currentOption->getId()?>"
+                                    <?php if ($i == 0): ?>
+                                        checked="checked"
+                                    <?php endif; ++$i; ?>
+                                    />
+                            </td>
+                            <td><?=$currentOption->getName()?></td>
+                            <td align="right"><?=$value['float']?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php endif; ?>

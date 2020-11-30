@@ -1,0 +1,58 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement  $page */
+?>
+<?php
+$langPrefix = cmsController::getInstance()->getPreLang();
+$authors = $this->macros('blogs20', 'viewBlogAuthors', array($variables['@pageId']));
+$ownerId = null;
+foreach ($authors['users']['nodes:item'] as $user) {
+    if (isset($user['attribute:is_owner']) && $user['attribute:is_owner'] == 1) {
+        $ownerId = $user['attribute:user_id'];
+    }
+}
+$page = $variables['full:page'];
+?>
+
+<div class="blog">
+    <div id="author_info">
+        <div class="blog_feed">
+            <a href="<?=$langPrefix?>/data/atom/<?=$variables['@pageId']?>" target="_blank">atom</a>
+            <a href="<?=$langPrefix?>/data/rss/<?=$variables['@pageId']?>" target="_blank">rss</a>
+        </div>
+        <?=$this->render(array('owner' => $this->getObjectById($ownerId)), 'blogs20/authorInfo')?>
+        <?php if (!$ownerId):?>
+            <h1><?=$page->getName()?></h1>
+        <?php endif;?>
+        <div class="clear" />
+    </div>
+    <?=$this->render($this->macros('blogs20', 'getPostsList', array($variables['@pageId'])), 'blogs20/postList')?>
+    <?php if (($ownerId == $variables['user']['@id']) || ($variables['user']['@type'] == 'sv')):?>
+        <div class="add_form">
+            <form name="frm_addblogmsg" method="post" action="/blogs20/postAdd/<?=$variables['@pageId']?>/" onsubmit="site.forms.data.save(this); return site.forms.data.check(this);">
+                <div class="form_element">
+                    <label class="required">
+                        <span><?=$this->translate('comment-title')?>:</span>
+                        <input type="text" name="title" class="textinputs" />
+                    </label>
+                </div>
+                <div class="form_element">
+                    <label class="required">
+                        <span><?=$this->translate('comment-message')?>:</span>
+                        <textarea name="content"></textarea>
+                    </label>
+                </div>
+                <div class="form_element">
+                    <label>
+                        <span><?=$this->translate('comment-tags')?>:</span>
+                        <input type="text" name="tags" class="textinputs" />
+                    </label>
+                </div>
+                <div class="form_element">
+                    <input type="submit" class="button" value="<?=$this->translate('blog-addpost')?>" />
+                </div>
+            </form>
+        </div>
+    <?php endif; ?>
+</div>

@@ -1,0 +1,13 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php if (isset($variables['void:lines'])): ?>
+<div id="comments">
+    <h3><?=$this->translate('comments')?>:</h3>
+    <?=$this->render(array('comments' => $variables['void:lines']), 'blogs20/comment')?>
+</div>
+<?php endif; ?>
+
+<?=$this->render(array('total' => $variables['total'], 'per_page' => $variables['per_page']), 'library/numpages')?>

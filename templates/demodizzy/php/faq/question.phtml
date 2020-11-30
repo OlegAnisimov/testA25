@@ -1,0 +1,16 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+?>
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<h3><?=$this->translate('comment-question')?></h3>
+<div><?=$page->getValue('question')?></div>
+<h3><?=$this->translate('comment-answer')?></h3>
+<div umi:element-id="<?=$page->getId()?>" umi:field-name="answer" umi:empty="<?=$this->translate('comment-answer')?>">
+    <?=$page->getValue('answer')?>
+</div>

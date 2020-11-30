@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selection>
+    <target result="pages">
+        <type module="catalog" method="object" />
+    </target>
+    <property name="new" value="1" />
+    <sort>rand()</sort>
+    <option name="load-all-props" value="1"/>
+    <limit page="0">{limit}</limit>
+</selection>

@@ -1,0 +1,25 @@
+#foot,
+#head,
+.left,
+.right,
+.social,
+#top_menu,
+.for_print,
+div.comments,
+#u-quickpanel,
+.comments form,
+#u-show_hide_btn,
+a[name="comments"] + h4,
+.item input[type="submit"],
+#main #page div.center div.content div.catalog a.compare {
+    display: none;
+}
+#main #page, body,
+#main #page div.center {
+    border: none;
+    background: none;
+}
+#main #page div.center {
+    margin: 20px 0 0 0;
+	width: 500px;
+}

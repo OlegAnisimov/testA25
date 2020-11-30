@@ -1,0 +1,93 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+    $page = $variables['full:page'];
+    $objects = null;
+    $utype = null;
+	$cookieJar = \UmiCms\Service::CookieJar();
+    $sort_field = $cookieJar->get('sort_field');
+    $sort_direction = $cookieJar->get('sort_direction');
+    $isRootCatalog = !isset($variables['parents']['+page']) || (isset($variables['parents']['+page']) && umiCount($variables['parents']['+page']) === 0);
+
+    if (isset($variables['parents']['+page']) && umiCount($variables['parents']['+page']) > 0) {
+        $utype = umiObjectTypesCollection::getInstance()->getTypeByGUID('catalog-object');
+        switch($sort_field) {
+            case 'Price':
+                $objects = $this->macros('catalog', 'getSmartCatalog', array(null, $page->getId(), null, null, 2, 'price', $sort_direction));
+                break;
+            case 'Name':
+                $objects = $this->macros('catalog', 'getSmartCatalog', array(null, $page->getId(), null, null, 2, 'title', $sort_direction));
+                break;
+            case 'Stock':
+                $objects = $this->macros('catalog', 'getSmartCatalog', array(null, $page->getId(), null, null, 2, 'common_quantity', $sort_direction));
+                break;
+            default:
+                $objects = $this->macros('catalog', 'getSmartCatalog', array(null, $page->getId(), null, null, 2, 'common_quantity', $sort_direction));
+                break;
+        }
+    }
+?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<?php
+
+if (!$isRootCatalog) {
+    try {
+        echo $this->render($this->macros('catalog', 'getSmartFilters', array('default', $page->getId(), 0, 1)), 'catalog/smart-filters');
+    } catch(Exception $e) {
+
+    }
+} else {
+    $specialOffers = $this->usel('special-offers', array('limit' => $this->translate('specials-limit')));
+    echo $this->render($specialOffers, 'catalog/special-offers');
+}
+
+?>
+
+
+<?php if ((!isset($objects['lines']) || !isset($objects['lines']['nodes:item']) || umiCount($objects['lines']['nodes:item']) < 1) && !$isRootCatalog): ?>
+    <div class="catalog" umi:element-id="<?=$page->getId()?>" umi:module="catalog" umi:method="getObjectsList" umi:sortable="sortable" umi:add-method="popup">
+        <?=$this->translate('empty-category')?>
+    </div>
+<?php elseif (isset($objects['lines']['nodes:item'])): ?>
+    <div class="catalog_sort"></div>
+    <div class="catalog <?=$cookieJar->get('catalog')?>">
+
+        <?=$this->render(null, 'catalog/sorting'); ?>
+
+        <div class="objects" umi:element-id="<?=$page->getId()?>" umi:module="catalog" umi:method="getObjectsList" umi:sortable="sortable">
+
+            <?php
+            $cart = $this->macros('emarket', 'cart');
+            $cartItems = array();
+            if (isset($cart['items']['nodes:item']) && $cart['items']['nodes:item']) {
+                foreach ($cart['items']['nodes:item'] as $item) {
+                    $cartItems[$item['page']->getId()] = $item['amount'];
+                }
+            }
+
+            $countItem = umiCount($objects['lines']['nodes:item']);
+            $counter = 1;
+            
+            foreach ( $objects['lines']['nodes:item'] as $object ) {
+                $catalogItem = $this->getPageById($object['attribute:id']);
+                $storeState = $catalogItem->getValue('stores_state');
+
+				echo $this->render(array('offer' => $catalogItem, 'cartItems' => $cartItems, 'all' => $countItem, 'current' => $counter), 'catalog/short-view');
+				++$counter;
+            }
+            if ($counter == 1) {
+                echo $this->translate('empty-category');
+            }
+            ?>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="clear"></div>
+
+    <?=$this->render(array('total' => $objects['total'], 'per_page' => $objects['per_page']), 'library/numpages')?>
+<?php endif; ?>

@@ -1,0 +1,33 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<form class="search" action="/search/search_do/" method="get">
+    <input
+        type="text"
+        value="<?=$this->translate('search-default-text')?>"
+        name="search_string"
+        class="textinputs"
+        onblur="javascript: if(this.value == '') this.value = '<?=$this->translate('search-default-text')?>';"
+        onfocus="javascript: if(this.value == '<?=$this->translate('search-default-text')?>') this.value = '';"
+        x-webkit-speech=""
+        speech="" />
+
+    <div class="search-result" ></div>
+
+    <script id="search-result-template" type="text/template">
+        <% _.each(typesList, function(type){ %>
+        <div class="search-block">
+            <h3><%= type.module ? type.module : '&nbsp;' %></h3>
+            <ul>
+                <% _.each(type.elements, function(page){ %>
+                <li><a href="<%= page.link %>"><%= page.context %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+        <% }); %>
+
+        <div class="search-all-result">
+            <span class="search-all-result">Все результаты</span>
+        </div>
+    </script>
+</form>

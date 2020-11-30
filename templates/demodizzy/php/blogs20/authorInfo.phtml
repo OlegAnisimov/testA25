@@ -1,0 +1,17 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiObject $owner */
+$owner = $variables['owner'];
+?>
+<h1>
+    <?php
+    $fname = $owner->getValue('fname');
+    $lname = $owner->getValue('lname');
+    if ($fname || $lname): ?>
+        <?=$fname?> <?=$lname?>
+    <?php else: ?>
+        <?=$owner->getValue('login')?>
+    <?php endif; ?>
+</h1>
+<div class="prof"><?=$owner->getValue('jobpost')?></div>

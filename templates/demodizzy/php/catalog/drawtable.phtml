@@ -1,0 +1,93 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+/** @var umiHierarchyElement $page */
+$page = $variables['page'];
+$optionProps = $page->getObject()->getType()->getFieldsGroupByName($variables['fieldData']);
+$fields = array();
+$groupTitle = '';
+if ($optionProps instanceof umiFieldsGroup) {
+	$fields = $optionProps->getFields();
+	$groupTitle = $optionProps->getTitle() . ':';
+}
+?>
+
+<table class="object">
+    <thead>
+    <tr>
+        <th colspan="2"><?=$groupTitle?></th>
+    </tr>
+    </thead>
+    <tbody umi:element-id="<?=$page->getId()?>">
+    <?php
+    /** @var umiField $property */
+    foreach ($fields as $property): ?>
+        <tr>
+            <td>
+                <span>
+                    <?=$property->getTitle()?>
+                </span>
+            </td>
+            <?php
+            switch ($property->getDataType()) {
+                case 'symlink' : {
+                    $list = $page->getValue($property->getName());
+                    $content = '';
+                    $hierarchy = umiHierarchy::getInstance();
+                    foreach ($list as $item) {
+                        $content .= "<a href='{$hierarchy->getPathById($item->getId())}'>{$item->getName()}</a>";
+                    }
+                    echo "<td umi:field-name='{$property->getName()}' umi:type='catalog::object'>
+                        {$content}
+                    </td>";
+                    break;
+                }
+                case 'relation' : {
+                    $relations = $page->getValue($property->getName());
+                    if (is_array($relations)) {
+                        $relationText = array();
+                        foreach ($relations as $relation) {
+                            $relationText[] = $this->getObjectById($relation)->getName();
+                        }
+                        $relationText = implode(', ', $relationText);
+                    } elseif (is_numeric($relations) && $this->getObjectById($relations) instanceof umiObject) {
+                        $relationText = $this->getObjectById($relations)->getName();
+                    } else {
+						$relationText = '';
+					}
+
+                    echo "<td umi:field-name='{$property->getName()}'>
+                        {$relationText}
+                    </td>";
+                    break;
+                }
+                case 'boolean' : {
+                    $isTrue = $page->getValue($property->getName());
+
+                    echo "<td umi:field-name='{$property->getName()}'>";
+                        if($isTrue) {
+                            echo $this->translate('yes');
+                        } else {
+                            echo $this->translate('no');
+                        }
+                    echo "</td>";
+                    break;
+                }
+                case 'wysiwyg' : {
+                    echo "<td umi:field-name='{$property->getName()}'>
+                        {$page->getValue($property->getName())}
+                    </td>";
+                    break;
+                }
+                default : {
+                    echo "<td umi:field-name='{$property->getName()}'>
+                        {$page->getValue($property->getName())}
+                    </td>";
+                }
+            }
+            ?>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

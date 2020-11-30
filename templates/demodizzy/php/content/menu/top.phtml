@@ -1,0 +1,7 @@
+<div id="top_menu" umi:element-id="0" umi:module="content" umi:region="list" umi:sortable="sortable" umi:add-method="popup">
+    <?php foreach ($variables['items']['nodes:item'] as $item): ?>
+        <a href="<?=$item['@link']?>" umi:element-id="<?=$item['@id']?>" umi:region="row" umi:field-name="name" umi:empty="<?=$this->translate('empty-section-name')?>" umi:delete="delete">
+            <?=$item['node:text']?>
+        </a>
+    <?php endforeach; ?>
+</div>

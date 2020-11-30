@@ -1,0 +1,22 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php foreach ($variables['form']['void:groups'] as $group): ?>
+    <?php if (!isset($variables['isHeaderShow']) || (isset($variables['isHeaderShow']) && $variables['isHeaderShow']) ): ?>
+    <h4>
+        <?=$group['attribute:title']?>
+    </h4>
+    <?php endif; ?>
+
+    <?php foreach ($group['void:fields'] as $field): ?>
+        <div>
+            <label title="<?=isset($field['attribute:tip']) ? $field['attribute:tip'] : ''?>" <?=isset($field['attribute:required']) ? 'class="required"' : ''?>>
+                <span><?=$field['attribute:title']?>:</span>
+
+                <?=$this->render(array('field' => $field), 'data/formField/' . $field['attribute:type'])?>
+
+            </label>
+        </div>
+    <?php endforeach; ?>
+
+<?php endforeach; ?>

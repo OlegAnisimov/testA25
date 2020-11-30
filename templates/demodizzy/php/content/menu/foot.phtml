@@ -1,0 +1,30 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<div class="links" umi:element-id="0" umi:module="content" umi:add-method="none" umi:region="list" umi:sortable="sortable">
+    <?php
+    $mobileVersion = $this->macros('content', 'getMobileModesList');
+    $link = null;
+    if (isset($mobileVersion['items']['nodes:item'])) {
+        foreach ($mobileVersion['items']['nodes:item'] as $version) {
+            if (isset($version['@status']) && $version['@status'] == 'active') {
+                $link = $version['@link'];
+                break;
+            }
+        }
+    }
+    ?>
+    <a href="<?=$link?>"><?=$this->translate('mobile-mode-on')?></a>
+    <?php
+        $hierarchy = umiHierarchy::getInstance();
+        /** @var umiHierarchyElement $item */
+        foreach ($variables['sel'] as $item):
+    ?>
+        <a  href="<?=$hierarchy->getPathById($item->getId())?>"
+            umi:element-id="<?=$item->getId()?>"
+            umi:field-name="name"
+            umi:empty="<?=$this->translate('empty-section-name')?>"
+            umi:delete="delete"
+            umi:region="row"
+            ><?=$item->getName()?></a>
+    <?php endforeach; ?>
+</div>

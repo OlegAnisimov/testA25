@@ -1,0 +1,41 @@
+<IfModule mod_php7.c>
+	php_flag engine off
+</IfModule>
+
+<IfModule mod_php5.c>
+	php_flag engine off
+</IfModule>
+
+<IfModule mod_authz_host.c>
+    <FilesMatch "(?i)\.(php[2-5]?|cgi|pl|fcgi|fpl|phtm|phtml|shtml|asp|jsp|twig|tpl|xslt?|git|svn|htaccess|htaccess_old|htpasswd|gitignore|gitkeep|ini|log|conf|md|sql|lock|umi\.json)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_access_compat.c>
+    <IfModule !mod_authz_host.c>
+        <FilesMatch "(?i)\.(php[2-5]?|cgi|pl|fcgi|fpl|phtm|phtml|shtml|asp|jsp|twig|tpl|xslt?|git|svn|htaccess|htaccess_old|htpasswd|gitignore|gitkeep|ini|log|conf|md|sql|lock|umi\.json)$">
+            Deny from all
+        </FilesMatch>
+    </IfModule>
+</IfModule>
+
+<IfModule mod_authz_core.c>
+	<IfModule !mod_access_compat.c>
+        <IfModule !mod_authz_host.c>
+            <FilesMatch "(?i)\.(php[2-5]?|cgi|pl|fcgi|fpl|phtm|phtml|shtml|asp|jsp|twig|tpl|xslt?|git|svn|htaccess|htaccess_old|htpasswd|gitignore|gitkeep|ini|log|conf|md|sql|lock|umi\.json)$">
+                Deny from all
+            </FilesMatch>
+        </IfModule>
+	</IfModule>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    <IfModule !mod_access_compat.c>
+        <IfModule !mod_authz_host.c>
+            <FilesMatch "(?i)\.(php[2-5]?|cgi|pl|fcgi|fpl|phtm|phtml|shtml|asp|jsp|twig|tpl|xslt?|git|svn|htaccess|htaccess_old|htpasswd|gitignore|gitkeep|ini|log|conf|md|sql|lock|umi\.json)$">
+                Deny from all
+            </FilesMatch>
+        </IfModule>
+    </IfModule>
+</IfModule>

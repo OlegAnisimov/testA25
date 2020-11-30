@@ -1,0 +1,8 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<h1><?= $variables['@header'] ?></h1>
+
+<div><?=$this->macros('webforms', 'posted', array($this->getRequest('param0')))?></div>

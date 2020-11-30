@@ -1,0 +1,26 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+/** @var umiDate $date */
+?>
+
+<?php if(isset($variables['page'])): ?>
+    <?php $page = $variables['page']; ?>
+    <div>
+        <?= $this->render($this->macros('users', 'viewAuthor', array($page->getValue('author_id'))), 'users/viewAuthor') ?>
+    </div>
+    (<span umi:empty="Дата сообщения" umi:field-name="publish_time" umi:element-id="<?= $page->getId() ?>">
+        <?php $date = $page->getValue('publish_time'); echo $date->getFormattedDate('d.m.Y H:i') ?>
+    </span>)
+<?php elseif($variables): ?>
+    <a
+        href="<?=$variables['attribute:link']?>"
+        umi:empty="<?=$this->translate('comment-title')?>"
+        umi:field-name="name"
+        umi:element-id="<?=$variables['attribute:id']?>"
+        >
+        <?=$variables['attribute:name']?>
+    </a>
+    <?=$this->render(array('page' => $this->getPageById($variables['attribute:id'])), 'forum/conf_last_message') ?>
+<?php endif; ?>

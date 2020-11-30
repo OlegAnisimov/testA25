@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xsl:stylesheet SYSTEM	"ulang://mobile/i18n/constants.dtd:file">
+
+<xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:template match="udata[@module = 'system' and @method = 'listErrorMessages']" />
+
+	<xsl:template match="udata[@module = 'system' and @method = 'listErrorMessages'][count(items/item) &gt; 0]">
+		<div class="errors">
+			<h3>
+				<xsl:text>&errors;:</xsl:text>
+			</h3>
+			<ul>
+				<xsl:apply-templates select="items/item" mode="error" />
+			</ul>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="item" mode="error">
+		<li>
+			<xsl:value-of select="." />
+		</li>
+	</xsl:template>
+
+
+	<xsl:template match="error">
+		<div class="errors">
+			<h3>
+				<xsl:text>&errors;:</xsl:text>
+			</h3>
+			<ul>
+				<li>
+					<xsl:value-of select="." />
+				</li>
+			</ul>
+		</div>
+	</xsl:template>
+</xsl:stylesheet>

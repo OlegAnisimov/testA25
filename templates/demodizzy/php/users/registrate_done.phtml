@@ -1,0 +1,31 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<?php $registerDone = $this->macros('users', 'registrate_done') ?>
+
+<h1><?= $variables['@header'] ?></h1>
+
+<?php if (isset($registerDone['result'])): ?>
+<?php switch ($registerDone['result']) {
+	case 'without_activation' : {
+		echo '<h4>' . $this->translate('registration-done') . '</h4>';
+		break;
+	}
+	case 'error' : {
+		echo '<h4>' . $this->translate('registration-error') . '</h4>';
+		break;
+	}
+	case 'error_user_exists': {
+		echo '<h4>' . $this->translate('registration-error-user-exists') . '</h4>';
+		break;
+	}
+	default: {
+		echo '<h4>' . $this->translate('registration-done') . '</h4>';
+		echo '<p>' . $this->translate('registration-activation-note') . '</p>';
+	}
+} ?>
+<?php else:
+	echo '<h4>' . $this->translate('registration-done') . '</h4>';
+	echo '<p>' . $this->translate('registration-activation-note') . '</p>';
+endif; ?>

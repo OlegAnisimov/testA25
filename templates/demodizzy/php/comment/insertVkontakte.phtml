@@ -1,0 +1,13 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if (isset($variables['attribute:type'])): ?>
+<script type="text/javascript" src="https://vk.com/js/api/openapi.js"></script>
+<script type="text/javascript"><![CDATA[VK.init({apiId: ]]><?=$variables['api']?><![CDATA[, onlyWidgets: true});]]></script>
+<hr /><a name="comments"></a>
+<h4><?=$this->translate('comments-vk')?>:</h4>
+<div id="vk_comments"></div>
+<script type="text/javascript"><![CDATA[
+VK.Widgets.Comments("vk_comments", {limit: ]]><?=$variables['per_page']?><![CDATA[, width: "]]><?=$variables['width']?><![CDATA[", attach: "]]><?=$variables['extend']?><![CDATA["});
+]]></script>
+<?php endif; ?>

@@ -1,0 +1,10 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php $page = $variables['full:page']; ?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<?= $this->render($this->macros('webforms', 'add', array($page->getValue('form_id'))), 'webforms/add') ?>

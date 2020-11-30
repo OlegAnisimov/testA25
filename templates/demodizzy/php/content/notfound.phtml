@@ -1,0 +1,13 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+<?php
+/** @var umiHierarchyElement $page */
+$page = $this->getPageByPath('/notfound/');
+?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+
+<div class="notfound" umi:element-id="<?=$page->getId()?>" umi:field-name="content">
+    <?=$page->getValue('content')?>
+</div>

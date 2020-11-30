@@ -1,0 +1,59 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if ( $variables['purchase']['purchasing']['@test-mode']): ?>
+    <script src="https://kupivkredit-test-fe.tcsbank.ru/widget/vkredit.js"></script>
+<?php else: ?>
+    <script src="https://www.kupivkredit.ru/widget/vkredit.js"></script>
+<?php endif; ?>
+
+<script>
+    jQuery(document).ready(function() {
+        function widgetOpen(order, sig, price) {
+            vKredit = new VkreditWidget(1, price, {
+                order: order,
+                sig: sig,
+                onClose: function() {
+                    window.location.assign("/emarket/purchase/payment/choose/");
+                },
+                onAccept: function(accepted) {
+                    if(accepted == 1) {
+                        window.location.assign("/emarket/purchase/payment/kupivkredit/?accepted=accepted");
+                    } else {
+                        window.location.assign("/emarket/purchase/payment/choose/");
+                    }
+
+                }
+            });
+
+            vKredit.openWidget();
+        }
+        widgetOpen(
+            "<?= $variables['purchase']['purchasing']['order'] ?>",
+            "<?= $variables['purchase']['purchasing']['sig'] ?>",
+            "<?= $variables['purchase']['purchasing']['totalPrice'] ?>"
+        );
+    });
+</script>
+
+<table class="steps-of-payment">
+    <tbody>
+        <tr>
+        <?php $steps = $variables['purchase']['purchasing']['steps']['+item']; ?>
+        <?php $preLang = $variables['context']['@pre-lang']; ?>
+        <td class="complete">
+            <a href="<?= $preLang ?>/emarket/cart/"><?= $this->translate('basket') ?></a>
+        </td>
+        <?php foreach ( $steps as $i => $step ): ?>
+            <?php if(in_array($step['@status'], array('incomplete', 'active'))): ?>
+                <td class="<?= $step['@status'] ?> <?php if($i == umiCount($steps)-1): ?>result<?php endif; ?>"><?= $step['@name'] ?></td>
+            <?php else: ?>
+                <td class="<?= $step['@status'] ?>"><a href="<?= $preLang.$step['@link'] ?>"><?= $step['@name'] ?></a> </td>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        </tr>
+    </tbody>
+</table>
+
+<h4><?= $this->translate('in-progress') ?></h4>
+<p><?= $this->translate('credit-request') ?></p>

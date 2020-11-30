@@ -1,0 +1,30 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<ul class="catalog_menu" umi:button-position="bottom left" umi:element-id="<?=$variables['void:category_id']?>" umi:region="list" umi:module="catalog" umi:sortable="sortable">
+    <?php foreach ($variables['items']['nodes:item'] as $category): ?>
+        <li umi:element-id="<?=$category['attribute:id']?>" umi:region="row">
+            <span>
+                <a href="<?=$category['attribute:link']?>" umi:field-name="name" umi:delete="delete" umi:empty="<?=$this->translate('empty-section-name')?>">
+                    <?php if(isset($category['node:text'])): ?>
+                        <?=$category['node:text']?>
+                    <?php endif; ?>
+                </a>
+            </span>
+            
+            <?php $categoryItems = $this->macros('catalog', 'getCategoryList', array(null, $category['attribute:id'], null, 1)) ?>
+
+            <ul umi:element-id="<?=$category['attribute:id']?>" umi:region="list" umi:module="catalog" umi:sortable="sortable" umi:button-position="top right">
+                <?php if(isset($categoryItems['items'])): ?>
+                    <?php foreach ($categoryItems['items']['nodes:item'] as $item): ?>
+                        <li umi:element-id="<?=$item['attribute:id']?>" umi:region="row">
+                            <a href="<?=$item['attribute:link']?>" umi:field-name="name" umi:delete="delete" umi:empty="<?=$this->translate('empty-section-name')?>">
+                                <?=$item['node:text']?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </ul>
+        </li>
+    <?php endforeach; ?>
+</ul>

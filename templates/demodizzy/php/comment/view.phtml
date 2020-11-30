@@ -1,0 +1,15 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php foreach ($variables['comments'] as $comment): ?>
+    <div class="item" umi:element-id="<?=$comment['attribute:id']?>" umi:region="row">
+        <div class="descr" umi:field-name="message" umi:delete="delete" umi:empty="<?=$this->translate('empty')?>" itemprop="description">
+            <?=($comment['node:message'])?>
+        </div>
+
+        <div class="date">
+            <?=$this->render($this->macros('users', 'viewAuthor', array($comment['attribute:author_id'])), 'users/viewAuthor')?>
+            (<?=date('d.m.Y H:i', $comment['attribute:publish_time'])?>)
+        </div>
+    </div>
+<?php endforeach; ?>

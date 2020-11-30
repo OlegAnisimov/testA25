@@ -1,0 +1,30 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<h1><?= $variables['@header'] ?></h1>
+
+<form id="forget" method="post" action="<?= cmsController::getInstance()->getPreLang() ?>/users/forget_do/">
+    <div>
+        <label>
+            <span>
+                <input type="radio" id="forget_login" name="choose_forget" checked="checked"/>
+                <?= $this->translate('login') ?>
+            </span>
+        </label>
+        <label>
+            <span>
+                <input type="radio" id="forget_email" name="choose_forget"/>
+                <?= $this->translate('e-mail') ?>
+            </span>
+        </label>
+    </div>
+    <div>
+        <input type="text" name="forget_login" style="margin-left:15px;"/>
+    </div>
+    <div>
+        <input type="submit" class="button" value="<?= $this->translate('forget-button') ?>"/>
+        <div class="clear"></div>
+    </div>
+</form>

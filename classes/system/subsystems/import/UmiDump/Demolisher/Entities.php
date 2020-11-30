@@ -1,0 +1,2 @@
+<?php
+ namespace UmiCms\System\Import\UmiDump\Demolisher;use UmiCms\System\Import\tSourceIdBinderInjector;use UmiCms\System\Import\UmiDump\Demolisher;abstract class Entities extends Demolisher implements iEntities {use tSourceIdBinderInjector;private $sourceId;public function setSourceId($vb80bb7740288fda1f201890375a60c8f) {$this->sourceId = (int) $vb80bb7740288fda1f201890375a60c8f;return $this;}protected function getSourceId() {return $this->sourceId;}}

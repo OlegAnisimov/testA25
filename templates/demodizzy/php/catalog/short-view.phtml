@@ -1,0 +1,101 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php
+/** @var umiHierarchyElement $object */
+$object = $variables['offer'];
+$objectLink = umiHierarchy::getInstance()->getPathById($object->getId());
+?>
+
+<div umi:region="row" umi:element-id="<?=$object->getId()?>"
+    <?php if ($variables['current'] % 3 == 2): ?>
+        class="object center"
+    <?php else: ?>
+        class="object"
+    <?php endif; ?>
+>
+
+    <a href="<?=$objectLink?>" class="title" umi:element-id="<?=$object->getId()?>" umi:field-name="name" umi:delete="delete">
+        <?=$object->getName()?>
+    </a>
+
+    <a href="<?=$objectLink?>" class="image">
+        <?php $mainPhoto = $object->getValue('photo'); ?>
+
+        <?php if ($mainPhoto instanceof iUmiImageFile): ?>
+            <?=$this->render(
+                array(
+                    'id' => $object->getId(),
+                    'fieldName' => 'photo',
+                    'src' => $mainPhoto->getFilePath(true),
+                    'empty' => $this->translate('empty-photo'),
+                    'width' => 154,
+                    'height' => 110
+                ),
+                'library/thumbnails'
+            )?>
+            <?php if ($object->getValue('new') == 1): ?>
+                <img src="/templates/demodizzy/images/new_blue.png" class="new" />
+            <?php endif; ?>
+        <?php endif; ?>
+    </a>
+
+    <div class="price">
+        <span umi:element-id="<?=$object->getId()?>" umi:field-name="price">
+            <?=$this->render($this->macros('emarket', 'price', array($object->getId())), 'emarket/price')?>
+        </span>
+    </div>
+    <?php if ($object->getValue('old_price') != 0): ?>
+        <div class="oldprice">
+            <span umi:element-id="<?=$object->getId()?>" umi:field-name="old_price">
+                <?=$this->render(array($this->macros('emarket', 'price', array($object->getId())), $object->getValue('old_price')), 'emarket/price')?>
+            </span>
+        </div>
+    <?php endif; ?>
+    <?php if( $object->getValue('common_quantity') > 0 ): ?>
+		<div class="inStock">
+			<span><?=$this->translate('in_stock')?></span>
+		</div>
+	<?php else: ?>
+		<div class="notInStock">
+			<span><?=$this->translate('not_in_stock')?></span>
+		</div>
+	<?php endif; ?>
+
+    <?=$this->render(array('object' => $object, 'groupName' => 'item_properties'), 'catalog/item_properties')?>
+
+    <div class="buttons">
+		<?php if( $object->getValue('common_quantity') > 0 ): ?>
+			<div class="add_from_list">
+				<?php
+				$isOptions = "false";
+				$headerPageFields = umiObjectTypesCollection::getInstance()->getType($object->getObjectTypeId())->getFieldsGroupByName('catalog_option_props')->getFields();
+				foreach ($headerPageFields as $headerPageField) {
+					if ($object->getValue($headerPageField->getName())) {
+						$isOptions = "true";
+						break;
+					}
+				}
+				?>
+	
+				<a id="add_basket_<?=$object->getId()?>"
+					  class="button basket_list options_<?=$isOptions?>"
+					  href="<?=cmsController::getInstance()->getPreLang()?>/emarket/basket/put/element/<?=$object->getId()?>/"><?=$this->translate('basket-add')?><?php if (isset($variables['cartItems'][$object->getId()])): ?> (<?=$variables['cartItems'][$object->getId()]?>)<?php endif; ?></a>
+			</div>
+			<div class="add_from_list">
+				<a id="one_click_<?=$object->getId()?>"
+				   class="button basket_list one_click options_<?=$isOptions?>"
+				   href="<?=cmsController::getInstance()->getPreLang()?>/emarket/getOneClickOrder/element/<?=$object->getId()?>/"><?=$this->translate('purchase-one-click')?></a>
+			</div>
+		<?php endif; ?>
+    </div>
+    <div class="clear"></div>
+
+    <?=$this->render($this->macros('emarket', 'getCompareLink', array('id' => $object->getId())), 'emarket/comparelink')?>
+
+    <?=$this->render(array('countComments' => $this->macros('comments', 'countComments', array('id' => $object->getId())), 'link' => $objectLink), 'comment/commentCount')?>
+</div>
+
+<?php if (($variables['current'] % 3 == 0) && ($variables['all'] != $variables['current'])): ?>
+    <hr />
+<?php endif; ?>

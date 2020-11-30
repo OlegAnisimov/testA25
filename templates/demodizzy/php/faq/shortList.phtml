@@ -1,0 +1,18 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<div id="faq">
+    <?php foreach ($variables['lines']['nodes:item'] as $item): ?>
+        <div>
+            <a href="<?=$item['attribute:link']?>" umi:element-id="<?=$item['attribute:id']?>" umi:field-name="name">
+                <?=$item['attribute:name']?>
+            </a>
+            <div umi:element-id="<?=$item['attribute:id']?>" umi:field-name="content">
+                <?php $faqItem = $this->getPageById($item['attribute:id']) ?>
+                <?=$faqItem->getValue('content')?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+<?=$this->render(array('total' => $variables['total'], 'per_page' => $variables['per_page']), 'library/numpages')?>

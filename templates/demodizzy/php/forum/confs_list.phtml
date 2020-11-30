@@ -1,0 +1,37 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php if($variables['total'] and $variables['total'] > 0): ?>
+    <table>
+        <thead>
+        <tr>
+            <th><?=$this->translate('forum')?></th>
+            <th><?=$this->translate('forum-topics-count')?></th>
+            <th><?=$this->translate('forum-answers')?></th>
+            <th><?=$this->translate('forum-last-message')?></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach($variables['void:lines'] as $item): ?>
+            <tr>
+                <td>
+                    <a href="<?=$item['attribute:link'] ?>" umi:element-id="<?=$item['attribute:id'] ?>" umi:field-name="name">
+                        <?=$item['node:name'] ?>
+                    </a>
+                    <div umi:element-id="<?=$item['attribute:id'] ?>" umi:field-name="descr">
+                        <?php $page = $this->getPageById($item['attribute:id']); ?>
+                        <?=$page->getValue('descr'); ?>
+                    </div>
+                </td>
+                <td align="center"><?=$item['attribute:topics_count'] ?></td>
+                <td align="center"><?=$item['attribute:messages_count'] ?></td>
+                <td><?=$this->render($this->macros('forum', 'conf_last_message', array($item['attribute:id'])), 'forum/conf_last_message')?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?=$this->render(array('total' => $variables['total'], 'per_page' => $variables['per_page']), 'library/numpages')?>
+<?php endif; ?>

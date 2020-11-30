@@ -1,0 +1,73 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if (isset($variables['banner'])): ?>
+    <div class="gray_block">
+        <?php 
+        if ($variables['banner']['attribute:type'] == 'image'):
+        	if( !isset( $variables['banner']['alt'] ) ) { $variables['banner']['alt'] = ''; }
+        ?>
+            <?php if (isset($variables['banner']['href'])): ?>
+                <a
+                    href="/banners/go_to/<?=$variables['attribute:id']?>/"
+                    <?=(isset($variables['banner']['attribute:target'])) ? '&target=' . $variables['banner']['attribute:target'] : '' ?>>
+                    <img
+                        src="<?=$variables['banner']['source']?>"
+                        alt="<?=$variables['banner']['alt']?>"
+                        width="<?=$variables['banner']['attribute:width']?>"
+                        height="<?=$variables['banner']['attribute:height']?>"
+                        border="0" />
+                </a>
+            <?php else: ?>
+                <img
+                    src="<?=$variables['banner']['source']?>"
+                    alt="<?=$variables['banner']['alt']?>"
+                    width="<?=$variables['banner']['attribute:width']?>"
+                    height="<?=$variables['banner']['attribute:height']?>"
+                    border="0" />
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($variables['banner']['attribute:type'] ==  'swf'): ?>
+
+            <object
+                width="<?=$variables['banner']['attribute:width']?>"
+                height="<?=$variables['banner']['attribute:height']?>"
+                align="middle"
+                codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0"
+                classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000">
+                <param name="allowScriptAccess" value="sameDomain" />
+                <param name="movie" value="<?=$variables['banner']['source']?>" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#ffffff" />
+                <param name="wmode" value="opaque" />
+
+                <?php if (isset($variables['banner']['href'])): ?>
+                    <param
+                        name="flashVars"
+                        value="url=/banners/go_to/<?=$variables['attribute:id']?>/<?=(isset($variables['banner']['attribute:target'])) ? '&target=' . $variables['banner']['attribute:target'] : '' ?>"
+                    />
+                <?php endif; ?>
+
+                <embed
+                    width="<?=$variables['banner']['attribute:width']?>" height="<?=$variables['banner']['attribute:height']?>"
+                    align="middle" wmode="opaque"
+                    pluginspage="http://www.macromedia.com/go/getflashplayer"
+                    type="application/x-shockwave-flash" allowscriptaccess="sameDomain"
+                    name="banner" bgcolor="#ffffff" quality="high" src="<?=$variables['banner']['source']?>"
+
+                    <?php if (isset($variables['banner']['href'])): ?>
+                        flashVars ="url=/banners/go_to/<?=$variables['attribute:id']?>/<?=(isset($variables['banner']['attribute:target'])) ? '&target=' . $variables['banner']['attribute:target'] : '' ?>"
+                    <?php endif; ?>
+                >
+
+                </embed>
+            </object>
+
+        <?php endif; ?>
+
+        <?php if ($variables['banner']['attribute:type'] ==  'html'): ?>
+            <?=$variables['banner']['source']?>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,61 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php $preLang = cmsController::getInstance()->getPreLang() ?>
+
+<form method="post" action="<?=$preLang?>/webforms/send/" onsubmit="site.forms.data.save(this); return site.forms.data.check(this);" enctype="multipart/form-data">
+
+    <?php if (umiCount($variables['items']['nodes:item'])): ?>
+
+        <?php
+        $selectedCount = 0;
+        $selectedEmail = null;
+        foreach ($variables['items']['nodes:item'] as $item) {
+            if (isset($item['attribute:selected'])) {
+                $selectedEmail = $item;
+                ++$selectedCount;
+            }
+        }
+        ?>
+
+        <?php if ($selectedCount != 1): ?>
+            <div class="form_element">
+                <label class="required">
+                    <span>Кому отправить:</span>
+                    <select name="system_email_to">
+                        <option value=""></option>
+                        <?php foreach ($variables['items']['nodes:item'] as $item): ?>
+                            <option value="<?=$item['attribute:id']?>"><?=$item['node:text']?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+            </div>
+        <?php else: ?>
+            <input type="hidden" name="system_email_to" value="<?=$selectedEmail['attribute:id']?>" />
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <?php foreach ($variables['groups']['void:groups'] as $group): ?>
+        <?php foreach ($group['void:fields'] as $field): ?>
+            <div class="form_element">
+            <label <?= (isset($field['attribute:required']) ? ' required="required" ' : '')?>>
+            <span><?= $field['attribute:title'] ?>:</span>
+            <?=$this->render(array('field' => $field), 'data/formField/' . $field['attribute:type'])?>
+            </label>
+            </div>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+
+    <input type="hidden" name="system_form_id" value="<?=$variables['attribute:form_id']?>" />
+    <input type="hidden" name="ref_onsuccess" value="<?=$preLang?>/webforms/posted/<?=$variables['attribute:form_id']?>/" />
+
+    <div class="form_element">
+        <?=$this->render($this->macros('system', 'captcha'), 'library/captcha')?>
+    </div>
+
+    <div class="form_element">
+        <input type="submit" class="button" value="Отправить" />
+    </div>
+</form>

@@ -1,0 +1,56 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+?>
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div id="photo" class="gray_block">
+
+    <?=$this->render(
+        array(
+            'id' => $page->getId(),
+            'fieldName' => 'photo',
+            'src' => $page->getValue('photo'),
+            'empty' => $this->translate('empty-photo'),
+            'width' => 495
+        ),
+        'library/thumbnails'
+    )?>
+
+    <?=$this->render(array('list' => $this->macros('photoalbum', 'album', array($page->getParentId(), null, 1000)), 'currentId' => $page->getId()), 'library/slider')?>
+</div>
+<div>
+    <?=$page->getValue('descr')?>
+</div>
+<div>
+    <a href="<?=umiHierarchy::getInstance()->getPathById($page->getParentId())?>">
+        <?=$this->translate('show-photo')?>
+    </a>
+</div>
+<div class="social">
+    <div class="plusone">
+        <div class="g-plusone" data-size="small" data-count="true"></div>
+    </div>
+    <script type="text/javascript">
+        jQuery(document).ready(function(){ jQuery.getScript('//yandex.st/share/share.js', function() {
+            new Ya.share({
+                'element': 'ya_share1',
+                'elementStyle': {
+                    'type': 'button',
+                    'linkIcon': true,
+                    'border': false,
+                    'quickServices': ['yaru', 'vkontakte', 'facebook', 'twitter', 'odnoklassniki', 'moimir', 'lj']
+                },
+                'popupStyle': {
+                    'copyPasteField': true
+                }
+            });
+        });
+        });
+    </script>
+    <span id="ya_share1"></span>
+</div>

@@ -1,0 +1,19 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<form action="<?= $variables['purchase']['purchasing']['formAction'] ?>" method="post">
+	<input type="hidden" name="eshopId" value="<?= $variables['purchase']['purchasing']['eshopId'] ?>" />
+	<input type="hidden" name="orderId"	value="<?= $variables['purchase']['purchasing']['orderId'] ?>" />
+	<input type="hidden" name="recipientAmount"	value="<?= $variables['purchase']['purchasing']['recipientAmount'] ?>" />
+	<input type="hidden" name="recipientCurrency" value="<?= $variables['purchase']['purchasing']['recipientCurrency'] ?>" />
+	<input type="hidden" name="version" value="<?= $variables['purchase']['purchasing']['version'] ?>" />
+
+	<div>
+		<?= $this->translate('payment-redirect-text') ?> RBK Money.
+	</div>
+
+	<div>
+		<input type="submit" value="<?= $this->translate('pay') ?>" class="button big"/>
+	</div>
+</form>
+<?=$this->render(array(), 'emarket/payment/form-send')?>

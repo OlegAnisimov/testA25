@@ -1,0 +1,15 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if ($variables['countComments']['node:total'] < 1): ?>
+<a href="<?=isset($variables['link']) ? $variables['link'] : null?>#add-comment" class="comments">
+    <?=$this->translate('no-comments')?>
+</a>
+<?php else: ?>
+<a href="<?=isset($variables['link']) ? $variables['link'] : null?>#comments" class="comments">
+    <?=$this->translate('comments')?>
+    <strong>
+        (<?=$variables['countComments']['node:total']?>)
+    </strong>
+</a>
+<?php endif; ?>

@@ -1,0 +1,20 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<form action="<?= $variables['purchase']['purchasing']['formAction'] ?>" method="post">
+    <input type="hidden" name="shopId" value="<?= $variables['purchase']['purchasing']['shopId'] ?>"/>
+    <input type="hidden" name="Sum" value="<?= $variables['purchase']['purchasing']['Sum'] ?>"/>
+    <input type="hidden" name="BankId" value="<?= (isset($variables['purchase']['purchasing']['BankId']) ? $variables['purchase']['purchasing']['BankId'] : '') ?>"/>
+    <input type="hidden" name="scid" value="<?= $variables['purchase']['purchasing']['scid'] ?>"/>
+    <input type="hidden" name="CustomerNumber" value="<?= $variables['purchase']['purchasing']['CustomerNumber'] ?>"/>
+    <input type="hidden" name="order-id" value="<?= $variables['purchase']['purchasing']['orderId'] ?>"/>
+
+    <div>
+        <?= $this->translate('payment-redirect-text') ?> Yandex.
+    </div>
+
+    <div>
+        <input type="submit" value="<?= $this->translate('pay') ?>" class="button big"/>
+    </div>
+</form>
+<?=$this->render(array(), 'emarket/payment/form-send')?>

@@ -1,0 +1,10 @@
+<?php
+	/** @var umiTemplaterPHP $this */
+	/** @var array $variables */
+	/** @var DOMNodeList $statuses */
+	$statuses = $this->xpathToInnerResult($variables, '/udata/@status');
+	$status = ($statuses->length == 0) ? null : $statuses->item(0)->nodeValue;
+?>
+<p>
+	<?= ($status == 'success') ? $this->translate('forget-message') : $this->translate('activation-error') ?>
+</p>

@@ -1,0 +1,30 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php if (umiCount($variables['nodes:group'])) : ?>
+    <form class="catalog_filter">
+        <?php $left = $right = '';
+        foreach ($variables['nodes:group'] as $group) {
+            foreach ($group['nodes:field'] as $field) {
+                if ($field['attribute:data-type'] != 'boolean') {
+                    $left .= $this->render($field, 'catalog/search-field');
+                } else {
+                    $right .= $this->render($field, 'catalog/search-field');
+                }
+            }
+        } ?>
+        <div class="left">
+            <?= $left ?>
+        </div>
+        <div class="right">
+            <?= $right ?>
+        </div>
+        <div class="clear"></div>
+        <div>
+            <input class="button" type="submit" value="<?=$this->translate('apply')?>" />
+            <input class="button" type="button" value="<?=$this->translate('reset')?>" onclick="javascript: window.location = '?';" />
+        </div>
+    </form>
+<?php endif; ?>

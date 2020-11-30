@@ -1,0 +1,32 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+
+<h4 class="empty-content">
+    <?=$this->translate('emarket-order-successful')?>
+</h4>
+
+<?php
+    if(isset($variables['purchase']['purchasing']['void:order_id'])):
+    $orderInfo = $this->getObjectById($variables['purchase']['purchasing']['void:order_id']);
+?>
+<p style="margin-bottom: 35px;">
+    <b><?=$orderInfo->getName()?></b> <?=$this->translate('order-is-in-processing')?>
+	<a href="/emarket/personal/default/<?=$variables['purchase']['purchasing']['personal_params']?>/"><?=$this->translate('personal-account')?></a>
+	<?=$this->translate('orders-tab')?>
+</p>
+<div class="cart-buttons">
+    <a href="<?=cmsController::getInstance()->getPreLang()?>/" class="toCatalog"><?=$this->translate('continue-shopping')?></a>
+</div>
+<?php endif; ?>
+
+<?php if (isset($variables['purchase']['purchasing']['invoice_link'])): ?>
+	<script>
+		jQuery(document).ready(function(){
+			var url = "http://" + "<?=$variables['context']['@domain']?>" + "<?=$variables['purchase']['purchasing']['invoice_link']?>";
+			var popupParams = "width=650,height=650,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no";
+			var popup = window.open(url, 'Счет для юридических лиц', popupParams);
+		});
+	</script>
+<?php endif; ?>

@@ -1,0 +1,47 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php $user = $this->getCommonVar('user'); ?>
+
+<?php if($variables['action']): ?>
+    <a name="add"></a>
+    <form method="post" action="<?=$variables['action'] ?>" onsubmit="site.forms.data.save(this); return site.forms.data.check(this);">
+        <?php if($user['@type'] == 'guest'): ?>
+            <div class="form_element">
+                <label class="required">
+                    <span><?=$this->translate('comment-you-name')?>:</span>
+                    <input type="text" name="nickname" class="textinputs" />
+                </label>
+            </div>
+            <div class="form_element">
+                <label class="required">
+                    <span><?=$this->translate('comment-you-email')?>:</span>
+                    <input type="text" name="email" class="textinputs" />
+                </label>
+            </div>
+        <?php else: ?>
+            <input type="hidden" name="login" disabled="disabled" />
+        <?php endif; ?>
+
+            <div class="form_element">
+                <label class="required">
+                    <span><?=$this->translate('comment-title')?>:</span>
+                    <input type="text" name="title" class="textinputs" />
+                </label>
+            </div>
+            <div class="form_element">
+                <label class="required">
+                    <span><?=$this->translate('comments')?>:</span>
+                    <textarea name="body"></textarea>
+                </label>
+            </div>
+            <div class="form_element">
+                <?=$this->render($this->macros('system', 'captcha'), 'library/captcha')?>
+            </div>
+            <div class="form_element">
+                <input type="submit" class="button" value="<?=$this->translate('forum-topic-post')?>" />
+            </div>
+        </form>
+<?php endif; ?>

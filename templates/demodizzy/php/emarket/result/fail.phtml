@@ -1,0 +1,16 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+
+<h4 class="empty-content">
+    <?=$this->translate('emarket-order-failed')?>
+</h4>
+<?php
+if(isset($variables['purchase']['purchasing']['void:order_id'])):
+    $orderInfo = $this->getObjectById($variables['purchase']['purchasing']['void:order_id']);
+    ?>
+    <div class="cart-buttons">
+        <a href="<?=cmsController::getInstance()->getPreLang()?>/" class="toCatalog"><?=$this->translate('continue-shopping')?></a>
+    </div>
+<?php endif; ?>

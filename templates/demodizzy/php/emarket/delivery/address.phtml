@@ -1,0 +1,109 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?= $this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps') ?>
+
+<?php
+$purchasing = $variables['purchase']['purchasing'];
+$selfDeliveries = (isset($purchasing['delivery']['items']['nodes:item'])) ? $purchasing['delivery']['items']['nodes:item'] : array();
+?>
+
+<form id="delivery_address" method="post" action="<?= cmsController::getInstance()->getPreLang() ?>/emarket/purchase/delivery/address/do/">
+
+	<h4><?= $this->translate('choose-delivery-address') ?></h4>
+	<input type="hidden" name="delivery-address" value="new" />
+	<?php
+	$i = 0;
+	foreach ($selfDeliveries as $deliveryItem):?>
+	<?php ++$i; ?>
+		<div>
+			<label>
+				<input type="radio" name="delivery-address" value="delivery_<?= $deliveryItem['attribute:id'] ?>" 
+					   data-type="<?= $deliveryItem['attribute:type-class-name'] ?>"
+					   <?php
+					   if ($i == 1 || (isset($deliveryItem['attribute:active']) && $deliveryItem['attribute:active'] == 'active')) {
+						   echo ' checked="checked" ';
+					   }
+					   ?>
+					   />
+				<?php $price = (isset($deliveryItem['attribute:price']) ? $deliveryItem['attribute:price'] : 0);?>
+				<?=$deliveryItem['attribute:name']?> - <?=$this->render($this->macros('emarket', 'applyPriceCurrency', array($price)), 'emarket/price')?>
+			</label>
+		</div>
+<?php endforeach; ?>
+
+
+
+	<?php
+	$i = 0;
+	if (isset($purchasing['items']['nodes:item'])):
+		foreach ($purchasing['items']['nodes:item'] as $deliveryItem):
+			?>
+		<?php ++$i; ?>
+			<div class="form_element">
+				<label style="white-space: nowrap">
+					<input type="radio" name="delivery-address" value="<?= $deliveryItem['attribute:id'] ?>"
+					<?php
+					if ($i == 1 || $deliveryItem['attribute:active'] == 'active') {
+						echo ' checked="checked" ';
+					}
+					?>/>
+						   <?php
+						   $address = $this->getObjectById($deliveryItem['attribute:id']);
+						   $fields = $address->getType()->getAllFields(true);
+
+						   $addressResult = array();
+						   /** @var umiField $field */
+						   foreach ($fields as $field) {
+							   if ($field->getName() == 'country') {
+								   $addressResult[] = $this->getObjectById($address->getValue($field->getName()))->getName();
+							   } else {
+								   $addressResult[] = $address->getValue($field->getName());
+							   }
+						   }
+						   echo implode(', ', $addressResult);
+						   ?>
+				</label>
+			</div>
+		<?php endforeach; ?>
+	<?php endif; ?>
+
+	<?php
+	if ((isset($purchasing['items']) &&
+			umiCount($purchasing['items']['nodes:item']) > 0 &&
+		$purchasing['only_self_delivery'] != 1) ||
+		($purchasing['self_delivery_exist'] == 1 &&
+		$purchasing['only_self_delivery'] != 1)
+	):
+		?>
+		<div>
+			<label>
+				<input type="radio" name="delivery-address" value="new" />
+					<?= $this->translate('new-delivery-address') ?>
+			</label>
+		</div>
+	<?php endif; ?>
+	
+	<?php
+	if ($purchasing['only_self_delivery'] != 1 && $purchasing['attribute:type-id']):?>
+		<div id="new-address">
+			<?= $this->render(array('form' => $this->macros('data', 'getCreateForm', array($purchasing['attribute:type-id'])), 'isHeaderShow' => false), 'data/formTemplate') ?>
+		</div>
+<?php endif; ?>
+	
+	<div>
+        <input type="submit" value="<?= $this->translate('continue') ?>" class="button big" />
+    </div>
+
+</form>
+<script>
+	jQuery(document).ready(function () {
+		var block = "#delivery_address";
+		jQuery(block).submit(function () {
+			return site.forms.emarket.checkFields(this);
+		});
+
+		site.forms.emarket.toggleNewObjectForm(block, '#new-address');
+	});
+</script>
+

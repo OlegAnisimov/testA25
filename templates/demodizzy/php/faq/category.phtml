@@ -1,0 +1,34 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+?>
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div id="faq">
+    <div umi:element-id="<?=$page->getId()?>" umi:field-name="content">
+        <?=$page->getValue('content')?>
+    </div>
+
+    <?php $categories = $this->macros('faq', 'category', array(null, $page->getId()));?>
+    <?php foreach ($categories['void:lines'] as $category): ?>
+        <div class="question">
+            <a href="<?=$category['attribute:link']?>" umi:element-id="<?=$category['attribute:id']?>" umi:field-name="name">
+                <?=$category['attribute:name']?>
+            </a>
+            <h4><?=$this->translate('comment-question')?></h4>
+            <div><?=$category['question']?></div>
+            <?php if (isset($category['answer'])): ?>
+                <h4><?=$this->translate('comment-answer')?></h4>
+                <div umi:element-id="<?=$category['attribute:id']?>" umi:field-name="answer" umi:empty="<?=$this->translate('comment-answer')?>">
+                    <?=$category['answer']?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+    <?=$this->render(array('total' => $categories['total'], 'per_page' => $categories['per_page']), 'library/numpages')?>
+    <?=$this->render($this->macros('faq', 'addQuestionForm', array(null, $page->getId())), 'faq/addQuestionForm')?>
+</div>

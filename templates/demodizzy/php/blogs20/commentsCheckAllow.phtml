@@ -1,0 +1,50 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php if ($variables['checkAllowComments']):?>
+    <form id="comment_add_form" name="frm_addblogmsg" method="post"
+          action="/blogs20/commentAdd/<?=$variables['pageId']?>/"
+          onsubmit="return site.forms.data.check(this);">
+        <div class="form_element">
+            <a name="additem"></a>
+            <label class="required">
+                <span><?=$this->translate('comment-title')?>:</span>
+                <input type="text" name="title" class="textinputs" />
+            </label>
+        </div>
+
+        <?php $user = $this->getCommonVar('user'); ?>
+        <?php if ($user['@type'] == 'guest'):?>
+            <div class="form_element">
+                <label class="required">
+                    <span><?=$this->translate('comment-you-name')?>:</span>
+                    <input type="text" name="nick" class="textinputs" />
+                </label>
+            </div>
+            <div class="form_element">
+                <label class="required">
+                    <span><?=$this->translate('comment-you-email')?>:</span>
+                    <input type="text" name="email" class="textinputs" />
+                </label>
+            </div>
+        <?php endif; ?>
+
+        <div class="form_element">
+            <label class="required">
+                <span><?=$this->translate('comment-body')?>:</span>
+                <textarea name="content"></textarea>
+            </label>
+        </div>
+        <div class="form_element">
+            <?=$this->render($this->macros('system', 'captcha'), 'library/captcha')?>
+        </div>
+        <div class="form_element">
+            <input type="submit" class="button" value="<?=$this->translate('comment-submit')?>" />
+        </div>
+    </form>
+<?php else: ?>
+    <p><?=$this->translate('comment-login')?></p>
+    <?=$this->render($this->macros('users', 'auth'), 'users/login')?>
+<?php endif; ?>

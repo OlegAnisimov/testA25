@@ -1,0 +1,36 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<a name="add-comment"></a>
+<form method="post" action="<?=$variables['add_form']['action']?>">
+    <div class="form_element">
+        <label>
+            <span><?=$this->translate('comment-title')?>:</span>
+            <input type="text" name="title" class="textinputs" />
+        </label>
+    </div>
+    <div class="form_element">
+        <label>
+            <span><?=$this->translate('comment-you-name')?>:</span>
+            <input type="text" name="author_nick" class="textinputs" />
+        </label>
+    </div>
+    <div class="form_element">
+        <label>
+            <span><?=$this->translate('comment-you-email')?>:</span>
+            <input type="text" name="author_email" class="textinputs" />
+        </label>
+    </div>
+    <div class="form_element">
+        <label>
+            <span><?=$this->translate('comment-body')?>:</span>
+            <textarea name="comment"></textarea>
+        </label>
+    </div>
+    <div class="form_element">
+        <?=$this->render($this->macros('system', 'captcha'), 'library/captcha')?>
+    </div>
+    <div class="form_element">
+        <input type="submit" class="button" value="<?=$this->translate('comment-submit')?>" />
+    </div>
+</form>

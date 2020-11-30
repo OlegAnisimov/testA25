@@ -1,0 +1,80 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+$page = $variables['full:page'];
+if ($page->getIsDefault()):
+	$specialOffers = $this->usel('special-offers', array('limit' => $this->translate('specials-limit')));
+	$lastOffers = $this->usel('last-offers', array('limit' => 3));
+
+	$banners = $this->macros( 'banners', 'multipleFastInsert', array('slider_block') );
+	$banners = $banners['nodes:banners'];
+	if( sizeof( $banners ) > 0 ):
+?>
+		<div class="owl-wrapper">
+			<div class="owl-carousel">
+				<?php
+				foreach( $banners as $banner ) {
+					if (!isset($banner['banner']) || !isset($banner['attribute:id'])) {
+						continue;
+					}
+					$id = $banner['attribute:id'];
+					$banner = $banner['banner'];
+					if( isset( $banner['href'] ) ) {
+						$banner['href'] = '/banners/go_to/'.$id;
+					}
+					if( isset( $banner['source'] ) && $banner['attribute:type'] == 'image' ) {
+						?>
+						<a href="<?=$banner['href']?>" class="own-banner-wrapper">
+							<img src="<?=$banner['source']?>">
+						</a>
+					<?php
+					} else {
+						?>
+						<div class="own-banner-wrapper">
+							<?=$banner['source']?>
+						</div>
+					<?php
+					}
+				}
+				?>
+			</div>
+			<?php if( sizeof( $banners ) > 1 ): ?>
+				<div class="owl-custom-prev"></div>
+				<div class="owl-custom-next"></div>
+			<?php endif;?>
+		</div>
+	
+	<script>
+	var owl = $(".owl-carousel").owlCarousel( {
+		singleItem : true,
+		autoPlay : 7000,
+		stopOnHover: true,
+	});
+	$(".owl-custom-next").click(function(){
+		owl.trigger('owl.next');
+	})
+	$(".owl-custom-prev").click(function(){
+		owl.trigger('owl.prev');
+	})
+	</script>
+	
+	<?php endif; ?>
+	
+    <h1 class="best"><?=$this->translate('new-offers'); ?></h1>
+    <?= $this->render($lastOffers, 'catalog/new-offers') ?>
+
+    <div class="clear"></div>
+
+    <h1 class="best" umi:element-id="<?= $page->getId() ?>" umi:field-name="h1" umi:empty="<?= $this->translate('empty-page-name') ?>"><?= $page->getName() ?></h1>
+    <?= $this->render($specialOffers, 'catalog/special-offers') ?>
+<?php else: ?>
+    <h1 umi:element-id="<?= $page->getId() ?>" umi:field-name="h1" umi:empty="<?= $this->translate('empty-page-name') ?>"><?= $page->getValue('h1') ?></h1>
+
+    <div umi:element-id="<?= $page->getId() ?>" umi:field-name="content" umi:empty="<?= $this->translate('empty-page-content') ?>">
+        <?= $page->getValue('content') ?>
+    </div>
+<?php
+endif;

@@ -1,0 +1,9 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php $field = $variables['field'] ?>
+<select name="<?=$field['attribute:input_name']?>">
+    <?php foreach ($field['void:options'] as $option): ?>
+        <option value="<?=$option['attribute:id']?>"><?=$option['node:name']?></option>
+    <?php endforeach; ?>
+</select>

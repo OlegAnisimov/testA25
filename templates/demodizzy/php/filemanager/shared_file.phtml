@@ -1,0 +1,30 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<h1 umi:element-id="<?=$variables['full:page']->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$variables['full:page']->getValue('h1')?></h1>
+
+<div class="files_in">
+	<div class="text" umi:element-id="<?=$variables['@pageId']?>" umi:field-name="content" umi:empty="<?=$this->translate('empty-page-content')?>">
+		<?=$variables['full:page']->getValue('content')?>
+	</div>
+	<?php
+	$sharedFile= $this->macros('filemanager', 'shared_file', [$variables['@pageId']]);
+	?>
+	<div class="gray_block">
+		<p>
+			<?=$this->translate('download-file-name') . ':'?>
+			<?=$sharedFile['file_name']?>
+		</p>
+		<p>
+			<?=$this->translate('download-file-size') . ':'?>
+			<?=$sharedFile['file_size']?>
+			<?=' Kb'?>
+		</p>
+		<p>
+			<?=$this->translate('download-part-one')?> <a href="<?=$sharedFile['download_link']?>"><?=$this->translate('download-part-two')?></a>
+		</p>
+		<script languge="text/javascript">
+			window.setTimeout('document.location.href="<?=$sharedFile['download_link']?>"', 10000);
+		</script>
+	</div>
+</div>

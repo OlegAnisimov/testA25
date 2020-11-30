@@ -1,0 +1,56 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php
+	$page = $variables['item']['page'];
+	$langPreffix = cmsController::getInstance()->getPreLang();
+	$actualPrice = isset($variables['item']['price']['actual']) ? $variables['item']['price']['actual'] : 0;
+	$originalPrice = isset($variables['item']['price']['original']) ? $variables['item']['price']['original'] : $actualPrice;
+	$totalActualPrice = isset($variables['item']['total-price']['actual']) ? $variables['item']['total-price']['actual'] : $actualPrice;
+?>
+
+<tr class="cart_item_<?=$variables['item']['attribute:id']?>">
+    <td class="name">
+
+        <?=$this->render(
+            array(
+                'id' => $page->getId(),
+                'fieldName' => 'photo',
+                'src' => $page->getValue('photo'),
+                'empty' => $this->translate('empty-photo'),
+                'width' => 77,
+                'height' => 55,
+                'align' => 'middle'
+            ),
+            'library/thumbnails'
+        )?>
+
+        <a href="<?=$langPreffix?><?=$variables['item']['void:link']?>"><?=$variables['item']['attribute:name']?></a>
+    </td>
+    <td>
+        <span><?=$originalPrice?></span>
+        <span class="x"> x </span>
+        <input type="text" value="<?=$variables['item']['amount']?>" class="amount" />
+        <input type="hidden" value="<?=$variables['item']['amount']?>" />
+        <span class="change-amount">
+            <img class="top" src="/templates/demodizzy/images/amount-top.png"/>
+            <img class="bottom" src="/templates/demodizzy/images/amount-bottom.png"/>
+        </span>
+    </td>
+    <td>
+        <span class="cart_item_discount_<?=$variables['item']['attribute:id']?>">
+            <?=isset($variables['item']['discount']['amount']) ? $variables['item']['discount']['amount'] : 0 ?>
+        </span>
+    </td>
+    <td>
+        <span class="cart_item_price_<?=$variables['item']['attribute:id']?> size2">
+            <?=$totalActualPrice?>
+        </span>
+    </td>
+    <td>
+        <a href="<?=$langPreffix?>/emarket/basket/remove/item/<?=$variables['item']['attribute:id']?>/" id="del_basket_<?=$variables['item']['attribute:id']?>" class="del"></a>
+    </td>
+</tr>
+<?= $this->render(array('relatedGoods' => $page->getValue('udachno_sochetaetsya_s')), 'emarket/cart-relatedGoods') ?>

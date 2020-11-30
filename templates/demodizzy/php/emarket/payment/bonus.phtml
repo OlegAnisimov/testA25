@@ -1,0 +1,33 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+
+<form id="bonus_payment" method="post" action="do/">
+    <h4>
+        <?=$this->translate('pay-by-bonuses')?>
+    </h4>
+    <div style="margin:0 15px;">
+        <p><?=$this->translate('can-use-bonuses')?></p>
+        <?=$this->translate('order-summ')?>
+        <?=$this->render(array('price' => $variables['purchase']['purchasing']['void:actual_total_price']), 'emarket/price')?>.
+        <br />
+        <?=$this->translate('available-bonuses')?>
+        <?=$this->render(array('price' => $variables['purchase']['purchasing']['void:available_bonus']), 'emarket/price')?>.
+    </div>
+    <div>
+        <label>
+            <?=$this->translate('spend-bonuses')?>
+            <?php if (isset($variables['purchase']['purchasing']['bonus']['attribute:prefix'])): ?>
+                <?=$variables['purchase']['purchasing']['bonus']['attribute:prefix']?>
+            <?php endif; ?>
+
+            <input type="text" name="bonus" />
+
+            <?php if (isset($variables['purchase']['purchasing']['bonus']['attribute:suffix'])): ?>
+                <?=$variables['purchase']['purchasing']['bonus']['attribute:suffix']?>
+            <?php endif; ?>
+        </label>
+    </div>
+    <div><input type="submit" value="<?=$this->translate('continue')?>" class="button big" /></div>
+</form>

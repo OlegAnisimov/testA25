@@ -1,0 +1,30 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php foreach ($variables['comments'] as $comment): ?>
+    <div class="comment">
+        <strong umi:element-id="<?=$comment['attribute:cid']?>" umi:field-name="publish_time" umi:delete="delete">
+            <?=date('d.m.Y в H:i', $comment['publish_time'])?>
+        </strong> |
+        <?php
+            $author = $this->getObjectById($comment['author_id']);
+            $userId = $author->getValue('user_id');
+        ?>
+
+        <?php if (isset($userId)): ?>
+            <?php $user = $this->getObjectById($userId); ?>
+            <?=$user->getValue('lname')?>&#160;
+            <?=$user->getValue('fname')?>
+            (<?=$user->getValue('login')?>)
+        <?php endif; ?>
+        <?=$author->getValue('nickname')?>
+
+        <div umi:element-id="<?=$comment['attribute:cid']?>" umi:field-name="content" class="comment_text">
+            <?=$comment['content']?>
+        </div>
+        <a href="#comment_add" class="comment_add_link" id="<?=$comment['attribute:cid']?>"><?=$this->translate('comment')?></a>
+        <?=$this->render(array('comments' => $comment['subcomments']['nodes:item']), 'blogs20/comment')?>
+    </div>
+<?php endforeach; ?>

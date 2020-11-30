@@ -1,0 +1,64 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $object */
+?>
+<?php
+$object = $variables['object'];
+$group = umiObjectTypesCollection::getInstance()->getType($object->getObjectTypeId())->getFieldsGroupByName($variables['groupName']);
+$fields = array();
+$groupTitle = '';
+if ($group instanceof umiFieldsGroup) {
+	$fields = $group->getFields();
+	$groupTitle = $group->getTitle() . ':';
+}
+?>
+
+<div class="item_properties">
+    <div>
+        <?=$groupTitle; ?>
+    </div>
+    <?php foreach($fields as $field):?>
+        <?php
+        $value = $object->getValue($field->getName());
+        if ($value):?>
+            <?php
+                echo $field->getTitle() . ':';
+                switch($field->getFieldType()->getDataType()) {
+                    case('relation'):
+                        $relations = $object->getValue($field->getName());
+                        if (is_array($relations)) {
+                            $relationText = array();
+                            foreach ($relations as $relation) {
+								$relation = $this->getObjectById($relation);
+								if ($relation instanceof umiObject) {
+									$relationText[] = $relation->getName();
+								}
+                            }
+                            $value = implode(', ', $relationText);
+                        } else {
+                            $relationObject = $this->getObjectById($relations);
+							if ($relationObject instanceof umiObject) {
+								$value = $relationObject->getName();
+							}
+                        }
+                        break;
+                    case('symlink'):
+                        $result = array();
+                        foreach ($value as $item) {
+                            if ($item instanceof umiHierarchyElement) {
+                                if ($field->getName() == 'udachno_sochetaetsya_s') {
+                                    $result[] = '<a href="' . umiHierarchy::getInstance()->getPathById($item->getId()) .'">' . $item->getName() . '</a>';
+                                } else {
+                                    $result[] = $item->getName();
+                                }
+                            }
+                        }
+                        $value = implode(', ', $result);
+                        break;
+                }
+            ?>
+            <span umi:field-name="<?=$field->getName()?>"><?=$value?></span>;
+        <?php endif; ?>
+    <?php endforeach; ?>
+</div>

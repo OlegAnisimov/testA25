@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selection>
+	<target result="pages">
+		<type module="content" method="page" />
+	</target>
+	<property name="info_page" value="1" />
+	<limit page="0">5</limit>
+</selection>

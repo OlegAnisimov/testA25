@@ -1,0 +1,42 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if (
+        isset($variables['@is_graded']) and $variables['@is_graded'] == '1' and
+        isset($variables['is_rated']) and $variables['is_rated']): ?>
+    <div class="votes element_<?= $variables['element_id'] ?>" title="<?=$this->translate('votes-title') ?>" itemprop="aggregateRating" itemscope="itemscope"
+         itemtype="http://schema.org/AggregateRating">
+        <span><?= $this->translate('votes-rate') ?>: </span>
+        <?php rateStars($variables['element_id'], $variables['rate'], $variables['rate_voters'], $variables['ceil_rate']); ?>
+    </div>
+<?php elseif (isset($variables['@is_graded']) and $variables['@is_graded'] == '1'): ?>
+    <div class="votes vote element_<?= $variables['element_id'] ?>" itemprop="aggregateRating" itemscope="itemscope"
+         itemtype="http://schema.org/AggregateRating">
+        <span><?= $this->translate('votes-vote') ?>: </span>
+        <?php rateStars($variables['element_id'], $variables['rate'], $variables['rate_voters'], $variables['ceil_rate']); ?>
+    </div>
+<?php endif; ?>
+
+<?php function rateStars($elementId, $rate, $rate_voters, $ceil_rate) { ?>
+    <link itemprop="ratingValue" content="<?= $rate ?>"/>
+    <link itemprop="reviewCount" content="<?= $rate_voters ?>"/>
+    <div class="star_1 current_<?= $ceil_rate ?>">
+        <a href="/vote/setElementRating//<?= $elementId ?>/1/"></a>
+
+        <div class="star_2 current_<?= $ceil_rate ?>">
+            <a href="/vote/setElementRating//<?= $elementId ?>/2/"></a>
+
+            <div class="star_3 current_<?= $ceil_rate ?>">
+                <a href="/vote/setElementRating//<?= $elementId ?>/3/"></a>
+
+                <div class="star_4 current_<?= $ceil_rate ?>">
+                    <a href="/vote/setElementRating//<?= $elementId ?>/4/"></a>
+
+                    <div class="star_5 current_<?= $ceil_rate ?>">
+                        <a href="/vote/setElementRating//<?= $elementId ?>/5/"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } ?>

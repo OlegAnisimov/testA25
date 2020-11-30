@@ -1,0 +1,29 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<div class="catalog <?=\UmiCms\Service::CookieJar()->get('catalog')?>">
+    <?php
+    /** @var umiHierarchyElement $first */
+    $first = $variables['sel']->first;
+    ?>
+
+    <div class="objects" umi:element-id="<?=$first->getParentId()?>" umi:module="catalog" umi:method="getObjectsList" umi:region="list" umi:add-method="none">
+        <?php
+        $cart = $this->macros('emarket', 'cart');
+        $cartItems = array();
+        if (isset($cart['items']['nodes:item']) && $cart['items']['nodes:item']) {
+            foreach ($cart['items']['nodes:item'] as $item) {
+                $cartItems[$item['page']->getId()] = $item['amount'];
+            }
+        }
+
+        /** @var umiHierarchyElement $offer */
+        $countItem = $variables['sel']->length;
+        $counter = 1;
+        foreach ($variables['sel'] as $offer) {
+            echo $this->render(array('offer' => $offer, 'cartItems' => $cartItems, 'all' => $countItem, 'current' => $counter), 'catalog/short-view');
+            ++$counter;
+        }
+        ?>
+    </div>
+</div>

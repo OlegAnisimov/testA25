@@ -1,0 +1,37 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<h1><?=$variables['@header']?></h1>
+
+<?php
+$subscribeDo = $this->macros('dispatches', 'subscribe_do');
+$user = $this->getCommonVar('user');
+?>
+
+<?php if (isset($subscribeDo['result']['@class']) && $subscribeDo['result']['@class'] == 'error'): ?>
+    <p><?= $this->translate($subscribeDo['result']['node']) ?></p>
+
+<?php elseif (isset($subscribeDo['unsubscribe_link'])): ?>
+    <?php if ($user['@type'] == 'guest'): ?>
+        <p><?= $this->translate('dispatch-you-to')?>.</p>
+        <p><?= $this->translate('dispatch-unsubscribe')?> <a href="<?= $subscribeDo['unsubscribe_link'] ?>"><?= $this->translate('dispatch-unsubscribe-part') ?></a>.</p>
+    <?php endif; ?>
+
+<?php elseif (isset($subscribeDo['result']['nodes:items']) && is_array($subscribeDo['result']['nodes:items']) && umiCount($subscribeDo['result']['nodes:items'])): ?>
+    <p><?= $this->translate('dispatch-you-to')?>:</p>
+    <ul>
+        <?php foreach($subscribeDo['result']['nodes:items'] as $item): ?>
+            <li>
+                <?=$item['node:disp_name'] ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+<?php elseif (isset($subscribeDo['result'])): ?>
+    <?php if ($user['@type'] != 'guest'): ?>
+        <p><?= $this->translate('dispatch-you-from')?>.</p>
+    <?php else: ?>
+        <?= $this->translate($subscribeDo['result']) ?>
+    <?php endif; ?>
+
+<?php endif; ?>

@@ -1,0 +1,1 @@
+<?php	$permissions = array(		'purchasing' => array(                    'summary_do', 'summary', 'get_payments', 'pay_from_lk', 'saveInfo_custom', 'receipt_link','get_lp_id','check_lk_pay','print_invoice'		)	);?>

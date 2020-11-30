@@ -1,0 +1,40 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php $search = $this->macros('search', 'search_do') ?>
+
+<?php if (umiCount($search['void:lines']) < 1): ?>
+    <form class="search" action="/search/search_do/" method="get">
+        <input type="text" value="<?=htmlspecialchars($search['last_search_string'])?>" name="search_string" class="textinputs"  x-webkit-speech="" speech="" />
+        <input type="submit" class="button" value="<?=$this->translate('search')?>" />
+    </form>
+
+    <p>
+        <strong>
+            <?=$this->translate('search-founded-left')?> "<?=$search['last_search_string']?>" <?=$this->translate('search-founded-nothing')?>.
+        </strong>
+    </p>
+<?php else: ?>
+    <form class="search" action="/search/search_do/" method="get">
+        <input type="text" value="<?=htmlspecialchars($search['last_search_string'])?>" name="search_string" class="textinputs"  x-webkit-speech="" speech="" />
+        <input type="submit" class="button" value="<?=$this->translate('search')?>" />
+    </form>
+
+    <p>
+        <strong>
+            <?=$this->translate('search-founded-left')?> "<?=htmlspecialchars($search['last_search_string'])?>" <?=$this->translate('search-founded-right')?>: <?=$search['total']?>.
+        </strong>
+    </p>
+
+    <dl class="search">
+        <?php $p = getRequest('p'); ?>
+        <?php foreach ($search['void:lines'] as $k => $item):?>
+            <dt>
+                <span><?=$p*$search['per_page'] + ($k+1)?>.</span>
+                <a href="<?=$item['attribute:link']?>" umi:element-id="<?=$item['attribute:id']?>" umi:field-name="name"><?=$item['attribute:name']?></a>
+            </dt>
+            <dd><?=$item['node:context']?></dd>
+        <?php endforeach; ?>
+    </dl>
+    <?=$this->render(array('total' => $search['total'], 'per_page' => $search['per_page']), 'library/numpages')?>
+<?php endif; ?>

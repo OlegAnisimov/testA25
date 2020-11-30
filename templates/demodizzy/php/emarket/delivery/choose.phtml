@@ -1,0 +1,57 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?=$this->render(array('steps' => $variables['purchase']['purchasing']['steps']), 'emarket/steps')?>
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="/js/underscore-min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/templates/demodizzy/js/jquery.mCustomScrollbar.min.css">
+<link type="text/css" rel="stylesheet" href="/styles/skins/modern/design/css/widget.Delivery.css" />
+<script src="/templates/demodizzy/js/jquery.mCustomScrollbar.concat.min.js" type="text/javascript"></script>
+<script src="/styles/skins/modern/design/js/widget.Delivery.js" type="text/javascript"></script>
+<form method="post" id="deliverySettingsForm" action="<?=cmsController::getInstance()->getPreLang()?>/emarket/purchase/delivery/choose/do/">
+	<h4><?=$this->translate('delivery-agent')?>:</h4>
+	<?php $i = 0; foreach ($variables['purchase']['purchasing']['items']['nodes:item'] as $item): ?>
+		<?php ++$i;?>
+		<?php
+		if ($item['attribute:type-class-name'] != 'ApiShip') {
+			?>
+			<div>
+				<label>
+					<input type="radio" name="delivery-id" value="<?=$item['attribute:id']?>"
+						<?=($i == 1) ? 'checked="checked"' : ''?>
+						/>
+					<?php $price = (isset($item['attribute:price']) ? $item['attribute:price'] : 0);?>
+					<?=$item['attribute:name']?> - <?=$this->render($this->macros('emarket', 'applyPriceCurrency', array($price)), 'emarket/price')?>
+				</label>
+			</div>
+		<?php } else { ?>
+			<div>
+				<label>
+					<input type="radio" data-api="api-ship" name="delivery-id" value="<?=$item['attribute:id']?>"
+						<?=($i == 1) ? 'checked="checked"' : ''?>
+						/>
+					<?=$item['attribute:name']?>
+				</label>
+			</div>
+			<script>
+				var ApiShipId = <?=$item['attribute:id']?>;
+				var basketOrderId = <?=$variables['purchase']['order']['attribute:id']?>;
+			</script>
+            <div id="order_delivery_apiship">
+            </div>
+			<div id="apiShipWidget" class="apishipWidgetLoader" style="display: none;">
+
+			</div>
+			<script src="/templates/demodizzy/js/delivery.js"></script>
+		<?php } ?>
+	<?php endforeach; ?>
+	<?php if ($i > 0) { ?>
+		<div>
+			<input type="submit" value="<?=$this->translate('continue')?>" class="button big" />
+		</div>
+	<?php } else { ?>
+		<div>
+			<?=$this->translate('delivery-providers-not-found')?>
+		</div>
+	<?php } ?>
+</form>

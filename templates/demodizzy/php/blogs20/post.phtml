@@ -1,0 +1,60 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+/** @var umiHierarchyElement $page */
+?>
+<?php $page = $variables['full:page'] ?>
+
+<h1 umi:element-id="<?=$page->getId()?>" umi:field-name="h1" umi:empty="<?=$this->translate('empty-page-name')?>"><?=$page->getValue('h1')?></h1>
+
+<div id="blog_items">
+    <div class="blog_item">
+        <div class="blog_header">
+            <?php if ($page->getValue('publish_time')): ?>
+                <?=$this->translate('comment-posted')?>
+                <em umi:element-id="<?=$page->getId()?>" umi:field-name="publish_time">
+                    <?=$page->getValue('publish_time')->getFormattedDate('d.m.Y');?>
+                </em>
+            <?php endif; ?>
+            <?php if ($page->getValue('tags')): ?>
+                <span umi:element-id="<?=$page->getId()?>" umi:field-name="tags">
+                    (<?=$this->render(array('tags' => $page->getValue('tags')), 'blogs20/tagList2')?>)
+                </span>
+            <?php endif; ?>
+        </div>
+        <div umi:element-id="<?=$page->getId()?>" umi:field-name="content">
+            <?php $postData = $this->macros('blogs20', 'postView', array($variables['@pageId']))?>
+			<?= (isset($postData['content'])) ? $postData['content'] : $page->getValue('content') ?>
+        </div>
+    </div>
+    <div class="social">
+        <div class="plusone">
+            <div class="g-plusone" data-size="small" data-count="true"></div>
+        </div>
+        <script type="text/javascript">
+            jQuery(document).ready(function(){
+                jQuery.getScript('//yandex.st/share/share.js', function() {
+                    new Ya.share({
+                        'element': 'ya_share1',
+                        'elementStyle': {
+                            'type': 'button',
+                            'linkIcon': true,
+                            'border': false,
+                            'quickServices': ['yaru', 'vkontakte', 'facebook', 'twitter', 'odnoklassniki', 'moimir', 'lj']
+                        },
+                        'popupStyle': {
+                            'copyPasteField': true
+                        }
+                    });
+                });
+            });
+        </script>
+        <span id="ya_share1"></span>
+    </div>
+    <div class="clear"></div>
+    <a name="subitems"></a>
+    <?=$this->render($this->macros('blogs20', 'commentsList', array($page->getId())), 'blogs20/commentsList')?>
+    <a name="comment_add"></a>
+    <h3><?=$this->translate('comment-submit')?>:</h3>
+    <?=$this->render(array('pageId' => $page->getId(), 'checkAllowComments' => $this->macros('blogs20', 'checkAllowComments')), 'blogs20/commentsCheckAllow')?>
+</div>

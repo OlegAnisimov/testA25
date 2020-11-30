@@ -1,0 +1,16 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php if ($variables): ?>
+    <hr />
+    <h4><?=$this->translate('recommended-items')?>:</h4>
+
+    <?php
+    /** @var umiHierarchyElement $item */
+    foreach ($variables as $item):
+    ?>
+        <a href="<?=umiHierarchy::getInstance()->getPathById($item->getId())?>"><?=$item->getName()?></a>
+    <?php endforeach; ?>
+
+    <div class="clear"></div>
+<?php endif; ?>

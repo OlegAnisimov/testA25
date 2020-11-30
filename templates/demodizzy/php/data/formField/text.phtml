@@ -1,0 +1,5 @@
+<?php /** @var umiTemplaterPHP $this */ ?>
+<?php /** @var array $variables */ ?>
+
+<?php $field = $variables['field'] ?>
+<textarea name="<?= $field['attribute:input_name'] ?>" class="textinputs"><?=isset($field['node:value']) ? $field['node:value'] : ''?></textarea>

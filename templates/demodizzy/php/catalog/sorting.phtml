@@ -1,0 +1,46 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+
+<?php
+	$cookieJar = \UmiCms\Service::CookieJar();
+    $sort_field = $cookieJar->get('sort_field');
+    $sort_direction = $cookieJar->get('sort_direction');
+?>
+
+<div class="change">
+    <?php if ($cookieJar->get('catalog') == 'list_view'): ?>
+        <div class="slab"><?=$this->translate('slab-view')?></div>
+        <div class="list act"><?=$this->translate('list-view')?></div>
+    <?php else: ?>
+        <div class="slab act"><?=$this->translate('slab-view')?></div>
+        <div class="list"><?=$this->translate('list-view')?></div>
+    <?php endif; ?>
+    <div class="sort">
+        <span><?=$this->translate('type-of-sort')?></span>
+        <?php if($sort_field == 'Price'): ?>
+                <a class="sort-price <?=$sort_direction == 1 ? 're' : '' ?>active">
+                    <?=$this->translate('sort-price');?>
+                </a> |
+                <a class="sort-name"><?=$this->translate('sort-name');?></a> |
+                <a class="sort-stock"><?=$this->translate('sort-stock');?></a>
+        <?php elseif ($sort_field == 'Name'): ?>
+                <a class="sort-price"><?=$this->translate('sort-price');?></a> |
+                <a class="sort-name <?=$sort_direction == 1 ? 're' : '' ?>active">
+                    <?=$this->translate('sort-name');?>
+                </a> |
+                <a class="sort-stock"><?=$this->translate('sort-stock');?></a>
+        <?php elseif ($sort_field == 'Stock'): ?>
+                <a class="sort-price"><?=$this->translate('sort-price');?></a> |
+                <a class="sort-name"><?=$this->translate('sort-name');?></a> |
+                <a class="sort-stock <?=$sort_direction == 1 ? 're' : '' ?>active">
+                    <?=$this->translate('sort-stock');?>
+                </a>
+        <?php else: ?>
+                <a class="sort-price"><?=$this->translate('sort-price');?></a> |
+                <a class="sort-name"><?=$this->translate('sort-name');?></a> |
+                <a class="sort-stock"><?=$this->translate('sort-stock');?></a>
+        <?php endif; ?>
+    </div>
+</div>

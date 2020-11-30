@@ -1,0 +1,26 @@
+<?php
+/** @var umiTemplaterPHP $this */
+/** @var array $variables */
+?>
+<form method="post" action="/users/login_do/">
+    <input type="hidden" name="from_page" value="<?=$variables['from_page']?>" />
+    <div>
+        <label>
+            <span><?=$this->translate('login')?></span>
+            <input type="text" name="login" class="textinputs" value="<?=$this->translate('login')?>" onfocus="javascript: if(this.value == '<?=$this->translate('login')?>') this.value = '';" onblur="javascript: if(this.value == '') this.value = '<?=$this->translate('login')?>';" />
+        </label>
+    </div>
+    <div>
+        <label>
+            <span><?=$this->translate('password')?></span>
+            <input type="password" name="password" class="textinputs" value="<?=$this->translate('password')?>" onfocus="javascript: if(this.value == '<?=$this->translate('password')?>') this.value = '';" onblur="javascript: if(this.value == '') this.value = '<?=$this->translate('password')?>';" />
+        </label>
+    </div>
+    <div>
+        <div style="float:right;">
+            <a href="<?=cmsController::getInstance()->getPreLang()?>/users/registrate/"><?=$this->translate('registration')?></a>
+            <a href="/users/forget/" style="margin:0 15px;"><?=$this->translate('forget-password')?></a>
+        </div>
+        <input type="submit" class="button" value="<?=$this->translate('log-in')?>" />
+    </div>
+</form>
